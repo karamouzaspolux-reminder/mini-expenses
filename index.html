@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Mini Expenses</title>
+
+<style>
+body{
+font-family:Arial;
+margin:20px;
+max-width:700px
+}
+
+h2{margin-bottom:10px}
+
+input,select{
+margin:4px 0;
+padding:6px;
+width:auto;
+}
+
+#date{
+width:150px;
+}
+
+#description{
+width:300px;
+}
+
+#category{
+width:200px;
+}
+
+#amount{
+width:120px;
+}
+
+button{
+cursor:pointer;
+padding:5px;
+font-size:12px;
+border:1px solid #aaa;
+background:#f4f4f4;
+}
+
+button:hover{background:#e8e8e8}
+
+.section{
+border:1px solid #ccc;
+padding:10px;
+margin-top:15px
+}
+
+.hidden{display:none}
+
+.button-row{
+display:flex;
+gap:5px;
+margin-top:5px
+}
+
+.button-row button{flex:1}
+
+.status-bar{
+margin-top:6px;
+font-size:12px;
+color:#555;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:10px
+}
+
+th,td{
+border:1px solid #ccc;
+padding:5px;
+text-align:left
+}
+
+.summary{
+font-weight:bold;
+margin-top:10px
+}
+
+/* Modal */
+
+#customModal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.35);
+display:none;   /* όχι flex εδώ */
+align-items:center;
+justify-content:center;
+z-index:9999;
+}
+
+#modalBox{
+background:white;
+padding:15px;
+min-width:260px;
+border:1px solid #aaa;
+box-shadow:0 0 15px rgba(0,0,0,0.3);
+}
+
+
+
+#modalButtons{
+margin-top:10px;
+text-align:right;
+}
+
+#modalButtons button{
+margin-left:5px;
+}
+
+.form-row{
+display:grid;
+grid-template-columns:120px 1fr;
+align-items:center;
+gap:10px;
+margin-bottom:6px;
+}
+
+.form-row label{
+font-weight:bold;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<h2>Mini Expenses</h2>
+
+<div class="section">
+
+<div class="form-row">
+<label>Date</label>
+<input type="date" id="date">
+</div>
+
+<div class="form-row">
+<label>Supplier</label>
+<input type="text" id="description">
+</div>
+
+<div class="form-row">
+<label>Category</label>
+<select id="category"></select>
+</div>
+
+<div class="form-row">
+<label>Amount</label>
+<input type="number" id="amount" step="0.01">
+</div>
+
+
+<div class="button-row">
+<button onclick="first()">⏮ First</button>
+<button onclick="prev()">◀ Previous</button>
+<button onclick="next()">Next ▶</button>
+<button onclick="last()">Last ⏭</button>
+</div>
+
+<div class="button-row">
+<button onclick="newRecord()">➕ New</button>
+<button onclick="save()">💾 Save</button>
+<button onclick="deleteRecord()">🗑 Delete</button>
+<button onclick="findRecord()">🔎 Find</button>
+</div>
+
+<div class="status-bar" id="statusBar"></div>
+
+</div>
+
+<div class="section">
+<h3>Filters</h3>
+
+<label>Category</label>
+<select id="filterCategory"></select>
+
+<label>From</label>
+<input type="date" id="filterFrom">
+
+<label>To</label>
+<input type="date" id="filterTo">
+
+<button onclick="applyFilters()">Apply Filters</button>
+<button onclick="clearFilters()">Clear Filters</button>
+
+<div class="summary" id="summary"></div>
+
+<button onclick="toggleGrid()">📋 Show / Hide Records</button>
+</div>
+
+<div class="section hidden" id="gridSection">
+<table id="grid">
+<thead>
+<tr>
+<th>Date</th>
+<th>Description</th>
+<th>Category</th>
+<th>Amount</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+
+<div class="section">
+<h3>Manage Categories</h3>
+<input type="text" id="newCategory">
+<button onclick="addCategory()">Add Category</button>
+<button onclick="deleteCategory()">Delete Selected Category</button>
+</div>
+
+<div class="section">
+<button onclick="exportData()">Export Backup</button>
+<input type="file" onchange="importData(event)">
+</div>
+
+<!-- Custom Modal -->
+<div id="customModal" class="hidden">
+  <div id="modalBox">
+    <div id="modalMessage"></div>
+    <div id="modalButtons"></div>
+  </div>
+</div>
+
+<script>
+
+let categories = JSON.parse(localStorage.getItem("categories")) || [
+{id:1,name:"Food"},
+{id:2,name:"Utilities"}
+];
+
+let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+let currentIndex = -1;
+
+function saveStorage(){
+localStorage.setItem("categories",JSON.stringify(categories));
+localStorage.setItem("expenses",JSON.stringify(expenses));
+}
+
+function refreshCategories(){
+let catSelect=document.getElementById("category");
+let filterSelect=document.getElementById("filterCategory");
+catSelect.innerHTML="";
+filterSelect.innerHTML="<option value=''>All</option>";
+
+categories.forEach(c=>{
+let opt=document.createElement("option");
+opt.value=c.id;
+opt.text=c.name;
+catSelect.add(opt.cloneNode(true));
+filterSelect.add(opt);
+});
+}
+
+function updateStatus(){
+let bar=document.getElementById("statusBar");
+if(currentIndex==-1){
+bar.innerText="New Record";
+}else{
+bar.innerText="Record "+(currentIndex+1)+" of "+expenses.length;
+}
+}
+
+function loadRecord(index){
+if(index<0 || index>=expenses.length)return;
+currentIndex=index;
+let e=expenses[index];
+date.value=e.date;
+description.value=e.description;
+category.value=e.categoryId;
+amount.value=e.amount;
+updateStatus();
+}
+
+function newRecord(){
+currentIndex=-1;
+date.value="";
+description.value="";
+amount.value="";
+updateStatus();
+}
+
+function save(){
+let d=date.value;
+let desc=description.value;
+let cat=category.value;
+let amt=parseFloat(amount.value);
+
+if(!d || !desc || !cat || !amt){
+showAlert("All fields required");
+return;
+}
+
+if(currentIndex==-1){
+expenses.push({id:Date.now(),date:d,description:desc,categoryId:parseInt(cat),amount:amt});
+currentIndex=expenses.length-1;
+}else{
+expenses[currentIndex]={...expenses[currentIndex],date:d,description:desc,categoryId:parseInt(cat),amount:amt};
+}
+
+saveStorage();
+updateStatus();
+showAlert("Saved");
+}
+
+function deleteRecord(){
+if(currentIndex==-1)return;
+
+showConfirm("Delete record?", function(){
+expenses.splice(currentIndex,1);
+currentIndex=-1;
+newRecord();
+saveStorage();
+});
+}
+
+function first(){ if(expenses.length)loadRecord(0);}
+function last(){ if(expenses.length)loadRecord(expenses.length-1);}
+function next(){ if(currentIndex<expenses.length-1)loadRecord(currentIndex+1);}
+function prev(){ if(currentIndex>0)loadRecord(currentIndex-1);}
+
+function findRecord(){
+showPrompt("Search description:", function(text){
+let index=expenses.findIndex(e=>e.description.toLowerCase().includes(text.toLowerCase()));
+if(index!=-1)loadRecord(index);
+else showAlert("Not found");
+});
+}
+
+function addCategory(){
+let name=newCategory.value.trim();
+if(!name)return;
+
+if(categories.some(c=>c.name.toLowerCase()==name.toLowerCase())){
+showAlert("Category exists");
+return;
+}
+
+categories.push({id:Date.now(),name:name});
+newCategory.value="";
+saveStorage();
+refreshCategories();
+}
+
+function deleteCategory(){
+let id=parseInt(category.value);
+
+if(expenses.some(e=>e.categoryId==id)){
+showAlert("Cannot delete. Category in use.");
+return;
+}
+
+categories=categories.filter(c=>c.id!=id);
+saveStorage();
+refreshCategories();
+}
+
+function applyFilters(){
+let cat=filterCategory.value;
+let from=filterFrom.value;
+let to=filterTo.value;
+
+let filtered=expenses.filter(e=>{
+return (!cat || e.categoryId==cat)
+&& (!from || e.date>=from)
+&& (!to || e.date<=to);
+});
+
+let total=filtered.reduce((sum,e)=>sum+e.amount,0);
+summary.innerText="Filtered Total: "+total.toFixed(2);
+renderGrid(filtered);
+}
+
+function clearFilters(){
+filterCategory.value="";
+filterFrom.value="";
+filterTo.value="";
+summary.innerText="";
+renderGrid(expenses);
+}
+
+function renderGrid(data){
+let tbody=document.querySelector("#grid tbody");
+tbody.innerHTML="";
+data.forEach(e=>{
+let tr=document.createElement("tr");
+let cat=categories.find(c=>c.id==e.categoryId);
+tr.innerHTML=`<td>${e.date}</td>
+<td>${e.description}</td>
+<td>${cat?cat.name:""}</td>
+<td>${e.amount.toFixed(2)}</td>`;
+tbody.appendChild(tr);
+});
+}
+
+function toggleGrid(){
+gridSection.classList.toggle("hidden");
+renderGrid(expenses);
+}
+
+function exportData(){
+let data={categories,expenses};
+let blob=new Blob([JSON.stringify(data)],{type:"application/json"});
+let a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="backup.json";
+a.click();
+}
+
+function importData(event){
+let file=event.target.files[0];
+let reader=new FileReader();
+reader.onload=function(){
+let data=JSON.parse(reader.result);
+categories=data.categories;
+expenses=data.expenses;
+saveStorage();
+refreshCategories();
+updateStatus();
+showAlert("Imported");
+}
+reader.readAsText(file);
+}
+
+/* ===== Custom Modal Logic ===== */
+
+function showAlert(message){
+modalMessage.innerText=message;
+modalButtons.innerHTML="<button onclick='closeModal()'>OK</button>";
+customModal.style.display="flex";
+}
+
+
+function showConfirm(message,callback){
+modalMessage.innerText=message;
+modalButtons.innerHTML=
+"<button onclick='closeModal()'>Cancel</button>"+
+"<button onclick='confirmYes()'>OK</button>";
+window.confirmCallback=callback;
+customModal.classList.remove("hidden");
+}
+
+function confirmYes(){
+closeModal();
+if(window.confirmCallback)window.confirmCallback();
+}
+
+function showPrompt(message,callback){
+modalMessage.innerHTML=
+"<div>"+message+"</div>"+
+"<input type='text' id='promptInput' style='width:100%;margin-top:5px'>";
+modalButtons.innerHTML=
+"<button onclick='closeModal()'>Cancel</button>"+
+"<button onclick='promptOk()'>OK</button>";
+window.promptCallback=callback;
+customModal.classList.remove("hidden");
+setTimeout(()=>document.getElementById("promptInput").focus(),50);
+}
+
+function promptOk(){
+let value=document.getElementById("promptInput").value;
+closeModal();
+if(window.promptCallback)window.promptCallback(value);
+}
+
+function closeModal(){
+customModal.style.display = "none";
+}
+
+refreshCategories();
+updateStatus();
+
+</script>
+</body>
+</html>
