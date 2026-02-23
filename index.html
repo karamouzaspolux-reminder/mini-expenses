@@ -1,487 +1,538 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Mini Expenses</title>
+<!DOCTYPE html>     <!-- Δηλώνει στον browser ότι το έγγραφο είναι HTML5. -->
+
+<html>       <!-- Το ριζικό στοιχείο. Όλο το έγγραφο βρίσκεται μέσα σε αυτό. -->
+
+<head>       <!-- Το head περιέχει πληροφορίες για τη σελίδα, όχι περιεχόμενο που φαίνεται στον χρήστη. -->
+    <meta charset="UTF-8">     <!-- Δηλώνει χρήση UTF-8 κωδικοποίησης. Επιτρέπει ελληνικά, σύμβολα, νομίσματα κτλ. -->
+    <title>Mini Expenses - Step 1</title>    <!-- Ο τίτλος που εμφανίζεται στο tab του browser. -->
 
 <style>
-body{
-font-family:Arial;
-margin:20px;
-max-width:700px
+
+  /* =================================
+   Καθολικός κανόνας υπολογισμού κουτιού
+  ==================================== */
+
+    
+
+
+  /* ===============================
+   Βασική μορφοποίηση σελίδας
+   ================================= */
+
+  body {
+    font-family: Arial, sans-serif;   /* Καθαρή γραμματοσειρά */
+    background-color: #f4f6f8;        /* Απαλό γκρι φόντο */
+    margin: 0;      /* Εξωτερικό περιθώριο: απόσταση του στοιχείου από τα άλλα στοιχεία */
+    padding: 0;     /* Εσωτερικό περιθώριο: κενός χώρος ανάμεσα στο περιεχόμενο και τα όρια του στοιχείου */
+  }  
+
+  /* ===============================
+   Πλαίσιο φόρμας (Card)
+   ================================= */
+
+  .section {
+      background-color: white;         /* Λευκό φόντο, δημιουργεί λευκό κουτί. */
+      
+      /* width: 100%;                Πάρε όλο το διαθέσιμο πλάτος του container σου (μόνο για κινητό)
+      width: 500px;                    /* Καθορισμός σταθερού πλάτους */
+      max-width: 95%;
+      /* margin: 40px auto;            40px πάνω-κάτω, auto αριστερά-δεξιά (οριζόντιο κεντράρισμα) */
+      margin: 10px 10px 10px 10px;     /* Πάνω  Δεξιά  Κάτω  Αριστερά  : αριστερή στοίχιση */
+      /* margin: 10px 0 0 10px;        Εναλλακτικός τρόπος για την αριστερή στοίχιση */
+      padding: 20px;                   /* Εσωτερικός χώρος, αέρας μέσα στο κουτί */
+      border: 1px solid #ccc;          /* Λεπτό γκρι περίγραμμα */
+      border-radius: 8px;              /* Ελαφρώς στρογγυλεμένες γωνίες */
+      /* Συνολικό πλάτος = 400 + 20 + 20 = 440. Το padding προστίθεται στο εξωτερικό μέγεθος, δεν μεγαλώνει το εσωτερικό κουτί. Μεγαλώνει το συνολικό ορατό μέγεθος. */
+  }
+
+   /* ===============================
+   Ευθυγράμμιση πεδίων φόρμας
+   ================================= */
+
+   /* Το flex προέρχεται από το flexible = ευέλικτο. Είναι σύστημα διάταξης (layout system), που επιτρέπει στα στοιχεία να τοποθετούνται ευέλικτα μέσα σε ένα κουτί. */ 
+
+  .form-row {
+      display: flex;              /* Βάζουμε label και input στην ίδια γραμμή, τα ευθυγραμμίζουμε. */
+      align-items: center;        /* Κατακόρυφη ευθυγράμμιση */
+      margin-bottom: 10px;        /* Απόσταση μεταξύ γραμμών */
+  }
+
+  .form-row label {
+      width: 105px;                /* Καθορισμός Σταθερού πλάτους για όλα τα labels */
+      font-weight: bold;          /* Λίγο πιο έντονα γράμματα */
+  }
+
+  .form-row input {
+      flex: 1;                    /* Το input καταλαμβάνει τον υπόλοιπο χώρο της γραμμής. */
+      padding: 6px;
+  }  
+
+
+  /* ===============================
+   Κεντράρισμα κουμπιών
+  ================================= */
+
+  .button-row {
+      display: flex;           /* Τα κουμπιά σε μία σειρά, ευθυγραμμισμένα */
+      justify-content: center; /* Οριζόντιο κεντράρισμα */
+      gap: 8px;                /* Απόσταση μεταξύ κουμπιών */
+      margin-top: 15px;
+  }
+
+
+   /* ===============================
+   Μορφοποίηση κουμπιών
+   ================================= */
+
+  .button-row button {
+      padding: 6px 12px;         /* Εσωτερικός χώρος */
+      border: 1px solid #bbb;
+      background-color: #f8f9fa;
+      border-radius: 4px;        /* Στρογγύλεμα των γωνιών των κουμπιών, όσο > αριθμός => > στρογγύλεμα.*/
+      cursor: pointer;           /* Δείχνει ότι είναι clickable */
+      font-size: 13px;
+  }
+
+  .button-row button:hover {    /* Όταν το ποντίκι πάει πάνω από το κουμπί→ άλλαξε το background.*/
+    background-color: #e2e6ea;  /* Αλλαγή χρώματος στο hover */
+  }
+
+
+  /* Wrapper για scroll σε κινητό */
+.table-wrapper {
+    overflow-x: auto;
 }
 
-h2{margin-bottom:10px}
-
-input,select{
-margin:4px 0;
-padding:6px;
-width:auto;
+/* Μορφοποίηση πίνακα */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px; /* κρατάει σωστό πλάτος σε desktop */
 }
 
-#date{
-width:150px;
+.data-table th,
+.data-table td {
+    border: 1px solid #ccc;
+    padding: 6px;
 }
 
-#description{
-width:300px;
+/* Κεφαλίδες κεντραρισμένες */
+.data-table th {
+    background-color: #f0f0f0;
+    text-align: center;
 }
 
-#category{
-width:200px;
+/* Περιεχόμενα στο  κέντρο */
+.data-table td {
+    text-align: center;
 }
 
-#amount{
-width:120px;
+/* Ποσά δεξιά */
+.data-table td.amount-cell {
+    text-align: right;
 }
 
-button{
-cursor:pointer;
-padding:5px;
-font-size:12px;
-border:1px solid #aaa;
-background:#f4f4f4;
+/* Προμηθευτές αριστερά */
+.data-table td.supplier-cell {
+    text-align: left;
 }
 
-button:hover{background:#e8e8e8}
-
-.section{
-border:1px solid #ccc;
-padding:10px;
-margin-top:15px
+.header-filter {
+    width: 18px;          /* μικρό */
+    padding: 0;
+    font-size: 11px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
 }
 
-.hidden{display:none}
-
-.button-row{
-display:flex;
-gap:5px;
-margin-top:5px
-}
-
-.button-row button{flex:1}
-
-.status-bar{
-margin-top:6px;
-font-size:12px;
-color:#555;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:10px
-}
-
-th,td{
-border:1px solid #ccc;
-padding:5px;
-text-align:left
-}
-
-.summary{
-font-weight:bold;
-margin-top:10px
-}
-
-/* Modal */
-
-#customModal{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.35);
-display:none;   /* όχι flex εδώ */
-align-items:center;
-justify-content:center;
-z-index:9999;
-}
-
-#modalBox{
-background:white;
-padding:15px;
-min-width:260px;
-border:1px solid #aaa;
-box-shadow:0 0 15px rgba(0,0,0,0.3);
-}
-
-
-
-#modalButtons{
-margin-top:10px;
-text-align:right;
-}
-
-#modalButtons button{
-margin-left:5px;
-}
-
-.form-row{
-display:grid;
-grid-template-columns:120px 1fr;
-align-items:center;
-gap:10px;
-margin-bottom:6px;
-}
-
-.form-row label{
-font-weight:bold;
+/* Για να μη μεγαλώνει η στήλη */
+.header-filter:focus {
+    width: auto;          /* ανοίγει μόνο όταν το πατήσεις */
+    background: white;
+    border: 1px solid #ccc;
 }
 
 
 </style>
+
 </head>
 
-<body>
+<body>                      <!-- Το body περιέχει Ο,ΤΙ φαίνεται στην οθόνη. -->
 
-<h2>Mini Expenses</h2>
+<h1>Mini Expenses</h1>      <!-- Επικεφαλίδα επιπέδου 1. Είναι σημασιολογικό στοιχείο (semantic). -->
 
-<div class="section">
+<form>   <!-- Η φόρμα ομαδοποιεί πεδία εισαγωγής.  Δεν κάνει ακόμη τίποτα. Απλώς οργανώνει δεδομένα. -->
+ 
+  <div class="section">
+    
+    <div class="form-row">    <!-- Το div είναι δομικό κουτί, για ομαδοποίηση στοιχείων. -->
+        <label>Date</label>  
+        <input type="date" id="date"> <!-- Πεδίο ημερομηνίας.Το type καθορίζει τη συμπεριφορά. -->
+    </div>
 
-<div class="form-row">
-<label>Date</label>
-<input type="date" id="date">
-</div>
+    <div class="form-row">
+        <label>Document</label>
+        <input type="text" id="document" list="documentList">   <!-- ΠΕΔΙΟ ΛΙΣΤΑΣ ΤΙΜΩΝ -->
+        <datalist id="documentList">
+             <!-- Οι επιλογές θα μπαίνουν δυναμικά, βάζουμε μερικές τώρα. -->
+             <option value="ΑΠΟΔΕΙΞΗ">
+             <option value="ΤΙΜΟΛΟΓΙΟ">
+             <option value="ΑΝΕΥ">
+        </datalist>
+    </div>
 
-<div class="form-row">
-<label>Supplier</label>
-<input type="text" id="description">
-</div>
-
-<div class="form-row">
-<label>Category</label>
-<select id="category"></select>
-</div>
-
-<div class="form-row">
-<label>Amount</label>
-<input type="number" id="amount" step="0.01">
-</div>
+    <div class="form-row">
+        <label>Doc_Number</label>
+        <input type="text" id="doc_number">  <!-- Πεδίο κειμένου -->      
+    </div>
 
 
-<div class="button-row">
-<button onclick="first()">⏮ First</button>
-<button onclick="prev()">◀ Previous</button>
-<button onclick="next()">Next ▶</button>
-<button onclick="last()">Last ⏭</button>
-</div>
+    <div class="form-row">
+        <label>Payment</label>
+        <input type="text" id="payment" list="paymentList">   <!-- ΠΕΔΙΟ ΛΙΣΤΑΣ ΤΙΜΩΝ -->
+        <datalist id="paymentList">
+             <!-- Οι επιλογές θα μπαίνουν δυναμικά, βάζουμε μερικές τώρα. -->
+             <option value="Μετρητοίς">
+             <option value="Κάρτα">
+             <option value="E-banking">
+        </datalist>
+    </div>
 
-<div class="button-row">
-<button onclick="newRecord()">➕ New</button>
-<button onclick="save()">💾 Save</button>
-<button onclick="deleteRecord()">🗑 Delete</button>
-<button onclick="findRecord()">🔎 Find</button>
-</div>
 
-<div class="status-bar" id="statusBar"></div>
+    <div class="form-row">
+        <label>Supplier</label>
+        <input type="text" id="supplier">  <!-- Πεδίο κειμένου -->      
+    </div>
 
-</div>
+    <div class="form-row">
+        <label>Category</label>
+        <input type="text" id="category" list="categoryList">   <!-- ΠΕΔΙΟ ΛΙΣΤΑΣ ΤΙΜΩΝ -->
+        <datalist id="categoryList">
+             <!-- Οι επιλογές θα μπαίνουν δυναμικά, βάζουμε μερικές τώρα. -->
+             <option value="ΤΡΟΦΙΜΑ">
+             <option value="ΚΑΥΣΙΜΑ">
+             <option value="ΕΝΟΙΚΙΟ">
+        </datalist>
+    </div>
 
-<div class="section">
-<h3>Filters</h3>
+    <div class="form-row">
+        <label>Amount</label>
+        <input type="number" id="amount">        
+    </div>
+     
+    <div class="button-row">       
+        <button type="button" id="saveBtn">Save</button>
+        <button type="button" id="newBtn">New</button>
+        <button type="button" id="delBtn">Del</button>
+        <button type="button" id="previousBtn">Prev</button>   
+        <button type="button" id="nextBtn">Next</button>  
+        <button type="button" id="firstBtn">First</button>
+        <button type="button" id="lastBtn">Last</button> 
+        <button type="button" id="showAllBtn">All</button>
+    </div>
 
-<label>Category</label>
-<select id="filterCategory"></select>
+    
+    
+    <div class="status-bar" id="statusBar"></div>
 
-<label>From</label>
-<input type="date" id="filterFrom">
-
-<label>To</label>
-<input type="date" id="filterTo">
-
-<button onclick="applyFilters()">Apply Filters</button>
-<button onclick="clearFilters()">Clear Filters</button>
-
-<div class="summary" id="summary"></div>
-
-<button onclick="toggleGrid()">📋 Show / Hide Records</button>
-</div>
-
-<div class="section hidden" id="gridSection">
-<table id="grid">
-<thead>
-<tr>
-<th>Date</th>
-<th>Description</th>
-<th>Category</th>
-<th>Amount</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
-</div>
-
-<div class="section">
-<h3>Manage Categories</h3>
-<input type="text" id="newCategory">
-<button onclick="addCategory()">Add Category</button>
-<button onclick="deleteCategory()">Delete Selected Category</button>
-</div>
-
-<div class="section">
-<button onclick="exportData()">Export Backup</button>
-<input type="file" onchange="importData(event)">
-</div>
-
-<!-- Custom Modal -->
-<div id="customModal" class="hidden">
-  <div id="modalBox">
-    <div id="modalMessage"></div>
-    <div id="modalButtons"></div>
   </div>
-</div>
+
+  <div id="resultsInfo" style="margin-bottom:8px; font-weight:bold;"></div>
+
+</form>
+
+<hr>
+
+
+<!-- <h3>Όλες οι Εγγραφές</h3> -->
+<div id="tableContainer"></div>
 
 <script>
-
-let categories = JSON.parse(localStorage.getItem("categories")) || [
-{id:1,name:"Food"},
-{id:2,name:"Utilities"}
-];
-
-let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
-
+let records = [];
 let currentIndex = -1;
+let selectedCategory = "all";   
+let selectedSupplier = "all";  // ..a.....
+let selectedPayment = "all";  // ..a1.....
 
-function saveStorage(){
-localStorage.setItem("categories",JSON.stringify(categories));
-localStorage.setItem("expenses",JSON.stringify(expenses));
+const STORAGE_KEY = "miniExpensesRecords";
+let savedData = localStorage.getItem(STORAGE_KEY);
+
+if (savedData) {
+    records = JSON.parse(savedData);
+    currentIndex = records.length - 1;
+    if (records.length > 0) displayRecord();
 }
 
-function refreshCategories(){
-let catSelect=document.getElementById("category");
-let filterSelect=document.getElementById("filterCategory");
-catSelect.innerHTML="";
-filterSelect.innerHTML="<option value=''>All</option>";
+// ================= SAVE =================
+document.getElementById("saveBtn").addEventListener("click", function () {
 
-categories.forEach(c=>{
-let opt=document.createElement("option");
-opt.value=c.id;
-opt.text=c.name;
-catSelect.add(opt.cloneNode(true));
-filterSelect.add(opt);
-});
-}
+    let categoryValue = document.getElementById("category").value.trim();
+    let dataList1 = document.getElementById("categoryList");
 
-function updateStatus(){
-let bar=document.getElementById("statusBar");
-if(currentIndex==-1){
-bar.innerText="New Record";
-}else{
-bar.innerText="Record "+(currentIndex+1)+" of "+expenses.length;
-}
-}
+    let exists = false;
+    for (let option of dataList1.options) {
+        if (option.value === categoryValue) {
+            exists = true;
+            break;
+        }
+    }
 
-function loadRecord(index){
-if(index<0 || index>=expenses.length)return;
-currentIndex=index;
-let e=expenses[index];
-date.value=e.date;
-description.value=e.description;
-category.value=e.categoryId;
-amount.value=e.amount;
-updateStatus();
-}
+    if (!exists && categoryValue !== "") {
+        let newOption = document.createElement("option");
+        newOption.value = categoryValue;
+        dataList1.appendChild(newOption);
+    }
 
-function newRecord(){
-currentIndex=-1;
-date.value="";
-description.value="";
-amount.value="";
-updateStatus();
-}
+    let record = {
+        date: document.getElementById("date").value,
+        document: document.getElementById("document").value,
+        doc_number: document.getElementById("doc_number").value,
+        payment: document.getElementById("payment").value,
+        supplier: document.getElementById("supplier").value,
+        category: categoryValue,
+        amount: parseFloat(document.getElementById("amount").value)
+    };
 
-function save(){
-let d=date.value;
-let desc=description.value;
-let cat=category.value;
-let amt=parseFloat(amount.value);
+    if (currentIndex === -1) {
+        records.push(record);
+        currentIndex = records.length - 1;
+    } else {
+        records[currentIndex] = record;
+    }
 
-if(!d || !desc || !cat || !amt){
-showAlert("All fields required");
-return;
-}
-
-if(currentIndex==-1){
-expenses.push({id:Date.now(),date:d,description:desc,categoryId:parseInt(cat),amount:amt});
-currentIndex=expenses.length-1;
-}else{
-expenses[currentIndex]={...expenses[currentIndex],date:d,description:desc,categoryId:parseInt(cat),amount:amt};
-}
-
-saveStorage();
-updateStatus();
-showAlert("Saved");
-}
-
-function deleteRecord(){
-if(currentIndex==-1)return;
-
-showConfirm("Delete record?", function(){
-expenses.splice(currentIndex,1);
-currentIndex=-1;
-newRecord();
-saveStorage();
-});
-}
-
-function first(){ if(expenses.length)loadRecord(0);}
-function last(){ if(expenses.length)loadRecord(expenses.length-1);}
-function next(){ if(currentIndex<expenses.length-1)loadRecord(currentIndex+1);}
-function prev(){ if(currentIndex>0)loadRecord(currentIndex-1);}
-
-function findRecord(){
-showPrompt("Search description:", function(text){
-let index=expenses.findIndex(e=>e.description.toLowerCase().includes(text.toLowerCase()));
-if(index!=-1)loadRecord(index);
-else showAlert("Not found");
-});
-}
-
-function addCategory(){
-let name=newCategory.value.trim();
-if(!name)return;
-
-if(categories.some(c=>c.name.toLowerCase()==name.toLowerCase())){
-showAlert("Category exists");
-return;
-}
-
-categories.push({id:Date.now(),name:name});
-newCategory.value="";
-saveStorage();
-refreshCategories();
-}
-
-function deleteCategory(){
-let id=parseInt(category.value);
-
-if(expenses.some(e=>e.categoryId==id)){
-showAlert("Cannot delete. Category in use.");
-return;
-}
-
-categories=categories.filter(c=>c.id!=id);
-saveStorage();
-refreshCategories();
-}
-
-function applyFilters(){
-let cat=filterCategory.value;
-let from=filterFrom.value;
-let to=filterTo.value;
-
-let filtered=expenses.filter(e=>{
-return (!cat || e.categoryId==cat)
-&& (!from || e.date>=from)
-&& (!to || e.date<=to);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    displayRecord();
+    renderTable(records);
 });
 
-let total=filtered.reduce((sum,e)=>sum+e.amount,0);
-summary.innerText="Filtered Total: "+total.toFixed(2);
-renderGrid(filtered);
-}
-
-function clearFilters(){
-filterCategory.value="";
-filterFrom.value="";
-filterTo.value="";
-summary.innerText="";
-renderGrid(expenses);
-}
-
-function renderGrid(data){
-let tbody=document.querySelector("#grid tbody");
-tbody.innerHTML="";
-data.forEach(e=>{
-let tr=document.createElement("tr");
-let cat=categories.find(c=>c.id==e.categoryId);
-tr.innerHTML=`<td>${e.date}</td>
-<td>${e.description}</td>
-<td>${cat?cat.name:""}</td>
-<td>${e.amount.toFixed(2)}</td>`;
-tbody.appendChild(tr);
+// ================= NEW =================
+document.getElementById("newBtn").addEventListener("click", function () {
+    currentIndex = -1;
+    document.querySelectorAll("input").forEach(i => i.value = "");
 });
+
+// ================= DELETE =================
+document.getElementById("delBtn").addEventListener("click", function () {
+
+    if (currentIndex === -1) return;
+
+    records.splice(currentIndex, 1);
+
+    if (currentIndex >= records.length)
+        currentIndex = records.length - 1;
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+
+    if (records.length > 0) displayRecord();
+    else document.querySelectorAll("input").forEach(i => i.value = "");
+
+    renderTable(records);
+});
+
+// ================= NAVIGATION =================
+document.getElementById("previousBtn").onclick = () => {
+    if (currentIndex > 0) {
+        currentIndex--;
+        displayRecord();
+    }
+};
+
+document.getElementById("nextBtn").onclick = () => {
+    if (currentIndex < records.length - 1) {
+        currentIndex++;
+        displayRecord();
+    }
+};
+
+document.getElementById("firstBtn").onclick = () => {
+    if (records.length > 0) {
+        currentIndex = 0;
+        displayRecord();
+    }
+};
+
+document.getElementById("lastBtn").onclick = () => {
+    if (records.length > 0) {
+        currentIndex = records.length - 1;
+        displayRecord();
+    }
+};
+
+// ================= DISPLAY =================
+function displayRecord() {
+
+    if (currentIndex < 0 || currentIndex >= records.length) return;
+
+    let record = records[currentIndex];
+
+    document.getElementById("date").value = record.date;
+    document.getElementById("document").value = record.document;
+    document.getElementById("doc_number").value = record.doc_number;
+    document.getElementById("payment").value = record.payment;
+    document.getElementById("supplier").value = record.supplier;
+    document.getElementById("category").value = record.category;
+    document.getElementById("amount").value = record.amount;
 }
 
-function toggleGrid(){
-gridSection.classList.toggle("hidden");
-renderGrid(expenses);
+// ================= SHOW TABLE =================
+document.getElementById("showAllBtn").addEventListener("click", function () {
+    selectedCategory = "all";
+    selectedSupplier = "all";   //  ......b...........
+    selectedPayment = "all";   //  ......b1...........
+    renderTable(records);
+});
+
+// ================= RENDER TABLE =================
+function renderTable(dataArray) {
+
+    let container = document.getElementById("tableContainer");
+
+    if (dataArray.length === 0) {
+        container.innerHTML = "<p>Δεν υπάρχουν εγγραφές.</p>";
+        return;
+    }
+
+    let html = "<div class='table-wrapper'><table class='data-table'>";
+
+    html += "<tr>";
+    html += "<th>Date</th>";
+    html += "<th>Document</th>";
+    html += "<th>Doc_Number</th>";
+    // html += "<th>Payment</th>";
+    // html += "<th>Supplier</th>";
+
+    html += "<th style='white-space:nowrap;'>Payment <select id='paymentHeaderFilter' class='header-filter'></select></th>";    //  ........c1..........
+    
+    html += "<th style='white-space:nowrap;'>Supplier <select id='supplierHeaderFilter' class='header-filter'></select></th>";    //  ........c..........
+   
+    html += "<th style='white-space:nowrap;'>Category <select id='categoryHeaderFilter' class='header-filter'></select></th>";
+
+     
+    
+    html += "<th>Amount</th>";
+    html += "</tr>";
+
+    let total = 0;
+
+    for (let record of dataArray) {
+
+        if (selectedCategory !== "all" && record.category !== selectedCategory)
+            continue;
+
+        if (selectedSupplier !== "all" && record.supplier !== selectedSupplier) // ..d......
+            continue;
+        if (selectedPayment !== "all" && record.payment !== selectedPayment) // ..d1......
+            continue;
+
+
+        html += "<tr>";
+        html += "<td>" + record.date + "</td>";
+        html += "<td>" + record.document + "</td>";
+        html += "<td>" + record.doc_number + "</td>";
+        html += "<td>" + record.payment + "</td>";
+        html += "<td class='supplier-cell'>" + record.supplier + "</td>";
+        html += "<td>" + record.category + "</td>";
+        html += "<td class='amount-cell'>" + record.amount + "</td>";
+        html += "</tr>";
+
+        total += Number(record.amount) || 0;
+    }
+
+    html += "<tr>";
+    html += "<td colspan='6' style='text-align:right;font-weight:bold;'>Total</td>";
+    html += "<td class='amount-cell' style='font-weight:bold;'>" + total.toFixed(2) + "</td>";
+    html += "</tr>";
+
+    html += "</table></div>";
+
+    container.innerHTML = html;
+
+    // ===== Header Filter =====
+    let select_1 = document.getElementById("categoryHeaderFilter");
+    let select_2 = document.getElementById("supplierHeaderFilter");   //....e......
+    let select_3 = document.getElementById("paymentHeaderFilter");   //....e1......
+
+    select_1.innerHTML = "<option value='all'>Όλες</option>";
+    select_2.innerHTML = "<option value='all'>Όλες</option>";     //......f......
+    select_3.innerHTML = "<option value='all'>Όλες</option>";     //......f1......
+
+    let categories = [...new Set(records.map(r => r.category))];
+    categories.sort();
+
+    let suppliers = [...new Set(records.map(r => r.supplier))];  // .......g........
+    suppliers.sort();
+    let payments = [...new Set(records.map(r => r.payment))];  // .......g1........
+    payments.sort();
+
+    for (let cat of categories) {
+        let option = document.createElement("option");
+        option.value = cat;
+        option.textContent = cat;
+        select_1.appendChild(option);
+    }
+
+    for (let cat of suppliers) {                        //......h........
+        let option = document.createElement("option");
+        option.value = cat;
+        option.textContent = cat;
+        select_2.appendChild(option);
+    }
+
+    for (let cat of payments) {                        //......h1........
+        let option = document.createElement("option");
+        option.value = cat;
+        option.textContent = cat;
+        select_3.appendChild(option);
+    }
+
+    select_1.value = selectedCategory;
+    select_2.value = selectedSupplier;               //.....i.......
+    select_3.value = selectedPayment;                //.....i1.......
+
+
+    select_1.onchange = function () {
+        selectedCategory = this.value;
+        renderTable(records);
+    };
+
+    select_2.onchange = function () {              //........k.........
+        selectedSupplier = this.value;
+        renderTable(records);
+    };
+
+    select_3.onchange = function () {              //........k1.........
+        selectedPayment = this.value;
+        renderTable(records);
+    };
+
+
+    // ΤΙΤΛΟΣ ΠΙΝΑΚΑ ΑΝΑΛΟΓΑ ΜΕ ΤΑ ΦΙΛΤΡΑΡΙΣΜΑΤΑ
+    let activeFilters = [];
+
+    if (selectedCategory !== "all")
+        activeFilters.push("Κατηγορία: " + selectedCategory);
+
+    if (selectedSupplier !== "all")
+        activeFilters.push("Προμηθευτής: " + selectedSupplier);
+
+    if (selectedPayment !== "all")
+        activeFilters.push("Τρόπος Πληρωμής: " + selectedPayment);
+
+    let filterText = "";
+
+    if (activeFilters.length > 0)
+        filterText = "Φιλτραρισμένες εγγραφές κατά " + activeFilters.join(" και ");
+    else
+        filterText = "Όλες οι εγγραφές";
+
+    document.getElementById("resultsInfo").innerText = filterText;
+
 }
 
-function exportData(){
-let data={categories,expenses};
-let blob=new Blob([JSON.stringify(data)],{type:"application/json"});
-let a=document.createElement("a");
-a.href=URL.createObjectURL(blob);
-a.download="backup.json";
-a.click();
-}
-
-function importData(event){
-let file=event.target.files[0];
-let reader=new FileReader();
-reader.onload=function(){
-let data=JSON.parse(reader.result);
-categories=data.categories;
-expenses=data.expenses;
-saveStorage();
-refreshCategories();
-updateStatus();
-showAlert("Imported");
-}
-reader.readAsText(file);
-}
-
-/* ===== Custom Modal Logic ===== */
-
-function showAlert(message){
-modalMessage.innerText=message;
-modalButtons.innerHTML="<button onclick='closeModal()'>OK</button>";
-customModal.style.display="flex";
-}
-
-
-function showConfirm(message,callback){
-modalMessage.innerText=message;
-modalButtons.innerHTML=
-"<button onclick='closeModal()'>Cancel</button>"+
-"<button onclick='confirmYes()'>OK</button>";
-window.confirmCallback=callback;
-customModal.classList.remove("hidden");
-}
-
-function confirmYes(){
-closeModal();
-if(window.confirmCallback)window.confirmCallback();
-}
-
-function showPrompt(message,callback){
-modalMessage.innerHTML=
-"<div>"+message+"</div>"+
-"<input type='text' id='promptInput' style='width:100%;margin-top:5px'>";
-modalButtons.innerHTML=
-"<button onclick='closeModal()'>Cancel</button>"+
-"<button onclick='promptOk()'>OK</button>";
-window.promptCallback=callback;
-customModal.classList.remove("hidden");
-setTimeout(()=>document.getElementById("promptInput").focus(),50);
-}
-
-function promptOk(){
-let value=document.getElementById("promptInput").value;
-closeModal();
-if(window.promptCallback)window.promptCallback(value);
-}
-
-function closeModal(){
-customModal.style.display = "none";
-}
-
-refreshCategories();
-updateStatus();
 
 </script>
+
+
 </body>
 </html>
