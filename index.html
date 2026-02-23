@@ -99,59 +99,59 @@
 
 
   /* Wrapper για scroll σε κινητό */
-.table-wrapper {
-    overflow-x: auto;
-}
+  .table-wrapper {
+      overflow-x: auto;
+  }
 
-/* Μορφοποίηση πίνακα */
-.data-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 700px; /* κρατάει σωστό πλάτος σε desktop */
-}
+  /* Μορφοποίηση πίνακα */
+  .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px; /* κρατάει σωστό πλάτος σε desktop */
+  }
 
-.data-table th,
-.data-table td {
-    border: 1px solid #ccc;
-    padding: 6px;
-}
+  .data-table th,
+  .data-table td {
+      border: 1px solid #ccc;
+      padding: 6px;
+  }
 
-/* Κεφαλίδες κεντραρισμένες */
-.data-table th {
-    background-color: #f0f0f0;
-    text-align: center;
-}
+  /* Κεφαλίδες κεντραρισμένες */
+  .data-table th {
+      background-color: #f0f0f0;
+      text-align: center;
+  }
 
-/* Περιεχόμενα στο  κέντρο */
-.data-table td {
-    text-align: center;
-}
+  /* Περιεχόμενα στο  κέντρο */
+  .data-table td {
+      text-align: center;
+  }
 
-/* Ποσά δεξιά */
-.data-table td.amount-cell {
-    text-align: right;
-}
+  /* Ποσά δεξιά */
+  .data-table td.amount-cell {
+      text-align: right;
+  }
 
-/* Προμηθευτές αριστερά */
-.data-table td.supplier-cell {
-    text-align: left;
-}
+  /* Προμηθευτές αριστερά */
+  .data-table td.supplier-cell {
+      text-align: left;
+  }
 
-.header-filter {
-    width: 18px;          /* μικρό */
-    padding: 0;
-    font-size: 11px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-}
+  .header-filter {
+      width: 18px;          /* μικρό */
+      padding: 0;
+      font-size: 11px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+  }
 
-/* Για να μη μεγαλώνει η στήλη */
-.header-filter:focus {
-    width: auto;          /* ανοίγει μόνο όταν το πατήσεις */
-    background: white;
-    border: 1px solid #ccc;
-}
+  /* Για να μη μεγαλώνει η στήλη */
+  .header-filter:focus {
+      width: auto;          /* ανοίγει μόνο όταν το πατήσεις */
+      background: white;
+      border: 1px solid #ccc;
+  }
 
 
 </style>
@@ -181,13 +181,7 @@
              <option value="ΑΝΕΥ">
         </datalist>
     </div>
-
-    <div class="form-row">
-        <label>Doc_Number</label>
-        <input type="text" id="doc_number">  <!-- Πεδίο κειμένου -->      
-    </div>
-
-
+    
     <div class="form-row">
         <label>Payment</label>
         <input type="text" id="payment" list="paymentList">   <!-- ΠΕΔΙΟ ΛΙΣΤΑΣ ΤΙΜΩΝ -->
@@ -248,18 +242,31 @@
 <!-- <h3>Όλες οι Εγγραφές</h3> -->
 <div id="tableContainer"></div>
 
+
+
+
+
 <script>
-let records = [];
-let currentIndex = -1;
+
+// localStorage.clear();   // Πλήρης καθαρισμός localStorage για αυτό το αρχείο    
+    
+let records = [];  // Πίνακας που θα κρατά τις εγγραφές (σαν πίνακας Access)
+let currentIndex = -1;  // // Δείκτης θέσης της τρέχουσας εγγραφής (καμία εγγραφή επιλεγμένη στην αρχή)
+                         // Το -1 σημαίνει καμιά εγγραφή, το 0 σημαίνει η πρώτη εγγραφή.
+
 let selectedCategory = "all";   
 let selectedSupplier = "all";  // ..a.....
 let selectedPayment = "all";  // ..a1.....
 
-const STORAGE_KEY = "miniExpensesRecords";
-let savedData = localStorage.getItem(STORAGE_KEY);
+// ================================
+// Φόρτωση δεδομένων από localStorage
+// ================================
 
-if (savedData) {
-    records = JSON.parse(savedData);
+const STORAGE_KEY = "miniExpensesRecords";         // όνομα–κλειδί (key) με το οποίο θα 
+let savedData = localStorage.getItem(STORAGE_KEY); // αποθηκεύσουμε τα δεδομένα στο localstorage
+
+if (savedData) {                       // Εάν υπάρχουν δεδομένα,
+    records = JSON.parse(savedData);   // φορτώνονται, μετατρέποντας το string πίσω σε πίνακα
     currentIndex = records.length - 1;
     if (records.length > 0) displayRecord();
 }
@@ -268,9 +275,12 @@ if (savedData) {
 document.getElementById("saveBtn").addEventListener("click", function () {
 
     let categoryValue = document.getElementById("category").value.trim();
-    let dataList1 = document.getElementById("categoryList");
+    let dataList1 = document.getElementById("categoryList"); // Ορισμός μεταβλητής με τις τιμές της Λίστας Κατηγοριών
 
+    // Έλεγχος αν η κατηγορία που γράψαμε στο πεδίο Λίστας υπάρχει ήδη στη λίστα Κατηγοριών
     let exists = false;
+    
+    // Αν υπάρχει, δεν την προσθέτουμε
     for (let option of dataList1.options) {
         if (option.value === categoryValue) {
             exists = true;
@@ -278,97 +288,106 @@ document.getElementById("saveBtn").addEventListener("click", function () {
         }
     }
 
+    // Αν δεν υπάρχει και δεν είναι κενή, την προσθέτουμε
     if (!exists && categoryValue !== "") {
-        let newOption = document.createElement("option");
-        newOption.value = categoryValue;
-        dataList1.appendChild(newOption);
+        let newOption = document.createElement("option");  // Ορίζουμε μια μεταβλητή(newOption)
+        newOption.value = categoryValue;                   // Παίρνει την τιμή που γράψαμε
+        dataList1.appendChild(newOption);                  // Την προσθέτει στη λίστα
     }
 
+    // .............Εδώ τελειώνει η διαδικασία που αφορά το πεδίο της Λίστας  Κατηγοριών.
+
+
+    // Δημιουργούμε αντικείμενο εγγραφής
     let record = {
         date: document.getElementById("date").value,
-        document: document.getElementById("document").value,
-        doc_number: document.getElementById("doc_number").value,
+        document: document.getElementById("document").value,        
         payment: document.getElementById("payment").value,
         supplier: document.getElementById("supplier").value,
         category: categoryValue,
         amount: parseFloat(document.getElementById("amount").value)
     };
 
-    if (currentIndex === -1) {
+    // Το βάζουμε στον πίνακα
+    if (currentIndex === -1) {     // Αν δεν είμαστε πάνω σε υπάρχουσα εγγραφή → ΝΕΑ
         records.push(record);
-        currentIndex = records.length - 1;
-    } else {
+        currentIndex = records.length - 1;  // Μετακινούμαστε στην τελευταία εγγραφή που μόλις αποθηκεύτηκε
+    } else {                                // Αν είμαστε πάνω σε υπάρχουσα → UPDATE
         records[currentIndex] = record;
     }
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
-    displayRecord();
+    // Αποθήκευση στο localStorage
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));  // Πάρε τον πίνακα records,
+         // μετέτρεψέ τον σε string, αποθήκευσέ τον μόνιμα στο local σαν miniExpensesRecords. Το JSON είναι η «γλώσσα μεταφοράς δεδομένων» του διαδικτύου.                                                    
+    displayRecord();    // Εμφανίζουμε την εγγραφή που μόλις αποθηκεύτηκε
     renderTable(records);
 });
 
 // ================= NEW =================
 document.getElementById("newBtn").addEventListener("click", function () {
     currentIndex = -1;
-    document.querySelectorAll("input").forEach(i => i.value = "");
+    document.querySelectorAll("input").forEach(i => i.value = "");  // Καθαρισμός όλων των πεδίων
 });
 
 // ================= DELETE =================
 document.getElementById("delBtn").addEventListener("click", function () {
 
-    if (currentIndex === -1) return;
+    if (currentIndex === -1) return;        // Αν δεν υπάρχουν εγγραφές, καμία ενέργεια
 
-    records.splice(currentIndex, 1);
+    records.splice(currentIndex, 1);        // Σβήσιμο της τρέχουσας εγγραφής
 
-    if (currentIndex >= records.length)
-        currentIndex = records.length - 1;
+    if (currentIndex >= records.length)     // Αν σβήσαμε την τελευταία
+        currentIndex = records.length - 1;  // Πηγαίνουμε στη νέα τελευταία
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));  // 👉 ΕΝΗΜΕΡΩΣΗ localStorage
 
-    if (records.length > 0) displayRecord();
-    else document.querySelectorAll("input").forEach(i => i.value = "");
+    if (records.length > 0) displayRecord(); // Αν υπάρχουν εγγραφές, να εμφανιστεί η τρέχουσα
+    else document.querySelectorAll("input").forEach(i => i.value = ""); // αλλιώς, καθαρισμός πεδίων
 
     renderTable(records);
 });
 
 // ================= NAVIGATION =================
-document.getElementById("previousBtn").onclick = () => {
-    if (currentIndex > 0) {
-        currentIndex--;
-        displayRecord();
+// document.getElementById("previousBtn").addEventListener("click", function() {
+document.getElementById("previousBtn").onclick = () => {  // Το ιδιο πράγμα με την πάνω γραμμή
+    if (currentIndex > 0) {   // Αν δεν είμαστε στην πρώτη εγγραφή
+        currentIndex--;       // Πηγαίνουμε μία πίσω
+        displayRecord();      // Την εμφανίζουμε
     }
 };
 
-document.getElementById("nextBtn").onclick = () => {
-    if (currentIndex < records.length - 1) {
-        currentIndex++;
-        displayRecord();
+document.getElementById("nextBtn").onclick = () => {  
+    if (currentIndex < records.length - 1) {    // Αν δεν είμαστε στην τελευταία εγγραφή
+        currentIndex++;                         // Πηγαίνουμε μία μπροστά
+        displayRecord();                        // Την εμφανίζουμε
     }
 };
 
 document.getElementById("firstBtn").onclick = () => {
-    if (records.length > 0) {
-        currentIndex = 0;
-        displayRecord();
+    if (records.length > 0) {   // Αν υπάρχει τουλάχιστον μια εγγραφή: (currentIndex > - 1)
+        currentIndex = 0;       // Πηγαίνουμε στην πρώτη εγγραφή.
+        displayRecord();        // Την εμφανίζουμε  
     }
 };
 
 document.getElementById("lastBtn").onclick = () => {
-    if (records.length > 0) {
-        currentIndex = records.length - 1;
-        displayRecord();
+    if (records.length > 0) {    // Αν υπάρχει τουλάχιστον μια εγγραφή: (currentIndex > - 1)
+        currentIndex = records.length - 1;  // Πηγαίνουμε στην τελευταία εγγραφή
+        displayRecord();                    // Την εμφανίζουμε
     }
 };
 
 // ================= DISPLAY =================
 function displayRecord() {
 
-    if (currentIndex < 0 || currentIndex >= records.length) return;
+    //    "||" = "Or",  "&&" = "And",  "!" = "Not"
+    if (currentIndex < 0 || currentIndex >= records.length) return;  // 0 εγγραφές => τίποτε
 
-    let record = records[currentIndex];
+    let record = records[currentIndex];   // // Παίρνουμε την τρέχουσα εγγραφή από τον πίνακα
 
+    // Γεμίζουμε τα πεδία της φόρμας με τα στοιχεία της εγγραφής
     document.getElementById("date").value = record.date;
-    document.getElementById("document").value = record.document;
-    document.getElementById("doc_number").value = record.doc_number;
+    document.getElementById("document").value = record.document;    
     document.getElementById("payment").value = record.payment;
     document.getElementById("supplier").value = record.supplier;
     document.getElementById("category").value = record.category;
@@ -377,7 +396,7 @@ function displayRecord() {
 
 // ================= SHOW TABLE =================
 document.getElementById("showAllBtn").addEventListener("click", function () {
-    selectedCategory = "all";
+    selectedCategory = "all";   // Ορίζουμε μεταβλητές για τα πεδία φιλτραρίσματος
     selectedSupplier = "all";   //  ......b...........
     selectedPayment = "all";   //  ......b1...........
     renderTable(records);
@@ -388,6 +407,7 @@ function renderTable(dataArray) {
 
     let container = document.getElementById("tableContainer");
 
+    // Αν δεν υπάρχουν δεδομένα
     if (dataArray.length === 0) {
         container.innerHTML = "<p>Δεν υπάρχουν εγγραφές.</p>";
         return;
@@ -395,10 +415,10 @@ function renderTable(dataArray) {
 
     let html = "<div class='table-wrapper'><table class='data-table'>";
 
+    // Κεφαλίδες
     html += "<tr>";
     html += "<th>Date</th>";
-    html += "<th>Document</th>";
-    html += "<th>Doc_Number</th>";
+    html += "<th>Document</th>";    
     // html += "<th>Payment</th>";
     // html += "<th>Supplier</th>";
 
@@ -406,15 +426,14 @@ function renderTable(dataArray) {
     
     html += "<th style='white-space:nowrap;'>Supplier <select id='supplierHeaderFilter' class='header-filter'></select></th>";    //  ........c..........
    
-    html += "<th style='white-space:nowrap;'>Category <select id='categoryHeaderFilter' class='header-filter'></select></th>";
-
-     
+    html += "<th style='white-space:nowrap;'>Category <select id='categoryHeaderFilter' class='header-filter'></select></th>";     
     
     html += "<th>Amount</th>";
     html += "</tr>";
 
     let total = 0;
 
+    // Γραμμές δεδομένων
     for (let record of dataArray) {
 
         if (selectedCategory !== "all" && record.category !== selectedCategory)
@@ -428,19 +447,19 @@ function renderTable(dataArray) {
 
         html += "<tr>";
         html += "<td>" + record.date + "</td>";
-        html += "<td>" + record.document + "</td>";
-        html += "<td>" + record.doc_number + "</td>";
+        html += "<td>" + record.document + "</td>";        
         html += "<td>" + record.payment + "</td>";
         html += "<td class='supplier-cell'>" + record.supplier + "</td>";
         html += "<td>" + record.category + "</td>";
         html += "<td class='amount-cell'>" + record.amount + "</td>";
         html += "</tr>";
 
-        total += Number(record.amount) || 0;
+        total += Number(record.amount) || 0;   // Υπολογισμός συνόλου
     }
 
+    // Γραμμή συνόλου
     html += "<tr>";
-    html += "<td colspan='6' style='text-align:right;font-weight:bold;'>Total</td>";
+    html += "<td colspan='5' style='text-align:right;font-weight:bold;'>Total</td>";
     html += "<td class='amount-cell' style='font-weight:bold;'>" + total.toFixed(2) + "</td>";
     html += "</tr>";
 
