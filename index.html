@@ -65,7 +65,7 @@
   }
 
   .form-row input {
-      flex: 1;                    /* Το input καταλαμβάνει τον υπόλοιπο χώρο της γραμμής. */
+      flex: 1;                    /* Το input καταλαμβάνει όλο τον διαθέσιμο χώρο της γραμμής. */
       padding: 6px;
   }  
 
@@ -420,7 +420,7 @@ function renderTable(dataArray) {
     // Κεφαλίδες
     html += "<tr>";
     html += "<th>Date</th>";
-    html += "<th>Document</th>";    
+    // html += "<th>Document</th>";    
     // html += "<th>Payment</th>";
     // html += "<th>Supplier</th>";
 
@@ -449,7 +449,7 @@ function renderTable(dataArray) {
 
         html += "<tr>";
         html += "<td>" + record.date + "</td>";
-        html += "<td>" + record.document + "</td>";        
+        // html += "<td>" + record.document + "</td>";        
         html += "<td>" + record.payment + "</td>";
         html += "<td class='supplier-cell'>" + record.supplier + "</td>";
         html += "<td>" + record.category + "</td>";
@@ -461,7 +461,7 @@ function renderTable(dataArray) {
 
     // Γραμμή συνόλου
     html += "<tr>";
-    html += "<td colspan='5' style='text-align:right;font-weight:bold;'>Total</td>";
+    html += "<td colspan='4' style='text-align:right;font-weight:bold;'>Total</td>";
     html += "<td class='amount-cell' style='font-weight:bold;'>" + total.toFixed(2) + "</td>";
     html += "</tr>";
 
