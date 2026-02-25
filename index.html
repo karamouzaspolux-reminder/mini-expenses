@@ -236,6 +236,7 @@
   </div>
 
   <div id="resultsInfo" style="margin-bottom:8px; font-weight:bold;"></div>
+  <button type="button" id="toggleTableBtn">Hide Records</button> <!-- ΚΟΥΜΠΙ ΓΙΑ ΚΡΥΨΙΜΟ ΠΙΝΑΚΣ -->
 
 </form>
 
@@ -246,6 +247,12 @@
 <div id="tableContainer"></div>
 
 
+<!-- Πλαίσιο Εισαγωγής-Εξαγωγής -->
+<div class="data-transfer">
+  <button onclick="exportData()">Εξαγωγή</button>
+  <button onclick="importData()">Εισαγωγή</button>
+  <input type="file" id="importFile" accept=".json" hidden>
+</div>
 
 
 
@@ -550,6 +557,74 @@ function renderTable(dataArray) {
 
     document.getElementById("resultsInfo").innerText = filterText;
 
+}
+
+// ΣΥΝΑΡΤΗΣΗ ΕΞΑΓΩΓΗΣ ΔΕΔΟΜΕΝΩΝ
+function exportData() {
+    const data = localStorage.getItem("miniExpensesRecords");
+    if (!data) {
+        alert("Δεν υπάρχουν δεδομένα για εξαγωγή.");
+        return;
+    }
+
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "mini-expenses-backup.json";
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+
+
+// ΣΥΝΑΡΤΗΣΗ ΚΡΥΨΙΜΑΤΟΣ ΠΙΝΑΚΑ
+let tableVisible = true;
+
+document.getElementById("toggleTableBtn").addEventListener("click", function () {
+
+    let tableDiv = document.getElementById("tableContainer");
+
+    if (tableVisible) {
+        tableDiv.style.display = "none";
+        this.textContent = "Show Records";
+        tableVisible = false;
+    } else {
+        tableDiv.style.display = "block";
+        this.textContent = "Hide Records";
+        tableVisible = true;
+    }
+});
+
+
+// ΣΥΝΑΡΤΗΣΗ ΕΞΑΓΩΓΗΣ ΔΕΔΟΜΕΝΩΝ
+function importData() {
+    const fileInput = document.getElementById("importFile");
+    fileInput.click();
+
+    fileInput.onchange = function () {
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            try {
+                const importedData = JSON.parse(e.target.result);
+
+                if (!confirm("Η εισαγωγή θα αντικαταστήσει όλα τα υπάρχοντα δεδομένα. Συνέχεια;"))
+                    return;
+
+                localStorage.setItem("miniExpensesRecords", JSON.stringify(importedData));
+                alert("Η εισαγωγή ολοκληρώθηκε.");
+                location.reload();
+            } catch (error) {
+                alert("Μη έγκυρο αρχείο JSON.");
+            }
+        };
+
+        reader.readAsText(file);
+    };
 }
 
 
