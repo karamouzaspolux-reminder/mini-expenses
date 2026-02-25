@@ -106,10 +106,11 @@
   }
 
   /* Μορφοποίηση πίνακα */
-  .data-table {
-      width: 100%;
+  .data-table {      
+      width: 100%;            /* Πάρε όλο το διαθέσιμο πλάτος του container σου (μόνο για κινητό)*/      
+      max-width: 550px;        /* Καθορισμός μεγίστου πλάτους */
       border-collapse: collapse;
-      min-width: 700px; /* κρατάει σωστό πλάτος σε desktop */
+      /* min-width: 700px;  κρατάει σωστό πλάτος σε desktop */
   }
 
   .data-table th,
