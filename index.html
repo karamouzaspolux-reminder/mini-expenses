@@ -118,6 +118,20 @@
       /* min-width: 700px;  κρατάει σωστό πλάτος σε desktop */
   }
 
+  .bar {
+  background: #eee;
+  height: 8px;
+  width: 100%;
+  margin-top: 4px;
+  border-radius: 4px;
+}
+
+.bar-fill {
+  background: #4CAF50;
+  height: 100%;
+  border-radius: 4px;
+}
+
   .data-table th,
   .data-table td {
       border: 1px solid #ccc;
@@ -279,11 +293,7 @@
     <div class="button-row">       
         <button type="button" id="saveBtn">Save</button>
         <button type="button" id="newBtn">New</button>
-        <button type="button" id="delBtn">Del</button>        
-        <button type="button" id="showAllBtn">All</button>
-    </div>
-
-    <div class="button-row">    
+        <button type="button" id="delBtn">Del</button>     
         <button type="button" id="previousBtn">Prev</button>   
         <button type="button" id="nextBtn">Next</button>  
         <button type="button" id="firstBtn">First</button>
@@ -298,6 +308,7 @@
 
   <div id="resultsInfo" style="margin-bottom:8px; font-weight:bold;"></div>
   <button type="button" id="toggleTableBtn">Hide Records</button> <!-- ΚΟΥΜΠΙ ΓΙΑ ΚΡΥΨΙΜΟ ΠΙΝΑΚΣ -->
+  <button type="button" id="summaryBtn">Summary by Category</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
 
 </form>
 
@@ -306,7 +317,7 @@
 
 <!-- <h3>Όλες οι Εγγραφές</h3> -->
 <div id="tableContainer"></div>
-
+<div id="summaryContainer" style="margin-top:15px;"></div>
 
 <!-- Πλαίσιο Εισαγωγής-Εξαγωγής -->
 <div class="data-transfer">
@@ -465,13 +476,7 @@ function displayRecord() {
     document.getElementById("amount").value = record.amount;
 }
 
-// ================= SHOW TABLE =================
-document.getElementById("showAllBtn").addEventListener("click", function () {
-    selectedCategory = "all";   // Ορίζουμε μεταβλητές για τα πεδία φιλτραρίσματος
-    selectedSupplier = "all";   //  ......b...........
-    selectedPayment = "all";   //  ......b1...........
-    renderTable(records);
-});
+
 
 // ================= RENDER TABLE =================
 function renderTable(dataArray) {
@@ -641,7 +646,9 @@ function exportData() {
 
 
 // ΣΥΝΑΡΤΗΣΗ ΚΡΥΨΙΜΑΤΟΣ ΠΙΝΑΚΑ
-let tableVisible = true;
+let tableVisible = false;
+document.getElementById("tableContainer").style.display = "none";
+document.getElementById("toggleTableBtn").textContent = "Show Records";
 
 document.getElementById("toggleTableBtn").addEventListener("click", function () {
 
@@ -652,6 +659,10 @@ document.getElementById("toggleTableBtn").addEventListener("click", function () 
         this.textContent = "Show Records";
         tableVisible = false;
     } else {
+
+        // 🔥 Δημιουργούμε τον πίνακα όταν ανοίγει
+        renderTable(records);
+
         tableDiv.style.display = "block";
         this.textContent = "Hide Records";
         tableVisible = true;
@@ -687,6 +698,84 @@ function importData() {
         reader.readAsText(file);
     };
 }
+
+
+// ================= SUMMARY BY CATEGORY =================
+let summaryVisible = false;
+
+document.getElementById("summaryBtn").addEventListener("click", function () {
+
+    let container = document.getElementById("summaryContainer");
+
+    if (summaryVisible) {
+        container.style.display = "none";
+        this.textContent = "Summary by Category";
+        summaryVisible = false;
+        return;
+    }
+
+    if (records.length === 0) {
+        container.innerHTML = "<p>Δεν υπάρχουν δεδομένα.</p>";
+        return;
+    }
+
+    let totalsByCategory = {};
+    let grandTotal = 0;
+
+    for (let record of records) {
+        let cat = record.category || "Χωρίς Κατηγορία";
+        let amount = Number(record.amount) || 0;
+
+        if (!totalsByCategory[cat])
+            totalsByCategory[cat] = 0;
+
+        totalsByCategory[cat] += amount;
+        grandTotal += amount;
+    }
+
+    let html = "<div class='table-wrapper'><table class='data-table'>";
+    html += "<tr><th>Category</th><th>Amount</th><th>%</th><th>Graph</th></tr>";
+
+    // Μετατρέπουμε το object σε array για να μπορούμε να κάνουμε sort
+    let sortedCategories = Object.entries(totalsByCategory);
+
+    // Φθίνουσα ταξινόμηση με βάση το ποσό
+    sortedCategories.sort((a, b) => b[1] - a[1]);
+
+    for (let [cat, amount] of sortedCategories) {
+
+        let percent = (amount / grandTotal) * 100;
+
+        html += "<tr>";
+        html += "<td>" + cat + "</td>";
+        html += "<td class='amount-cell'>" + amount.toFixed(2) + "</td>";
+        html += "<td>" + percent.toFixed(2) + "%</td>";
+
+        html += "<td>";
+        html += "<div class='bar'>";
+        html += "<div class='bar-fill' style='width:" + percent.toFixed(2) + "%'></div>";
+        html += "</div>";
+        html += "</td>";
+        html += "</tr>";
+    }
+
+    html += "<tr>";
+    html += "<td style='font-weight:bold;'>Total</td>";
+    html += "<td class='amount-cell' style='font-weight:bold;'>" + grandTotal.toFixed(2) + "</td>";
+    html += "<td style='font-weight:bold;'>100.00%</td>";
+    html += "<td></td>";
+    html += "</tr>";
+
+    html += "</table></div>";
+
+    container.innerHTML = html;
+    container.style.display = "block";
+    this.textContent = "Hide Summary";
+    summaryVisible = true;
+});
+ 
+
+
 
 
 </script>
