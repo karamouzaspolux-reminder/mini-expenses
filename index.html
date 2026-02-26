@@ -3,9 +3,9 @@
 <html>       <!-- Το ριζικό στοιχείο. Όλο το έγγραφο βρίσκεται μέσα σε αυτό. -->
 
 <head>       <!-- Το head περιέχει πληροφορίες για τη σελίδα, όχι περιεχόμενο που φαίνεται στον χρήστη. -->
-    <meta charset="UTF-8">     <!-- Δηλώνει χρήση UTF-8 κωδικοποίησης. Επιτρέπει ελληνικά, σύμβολα, νομίσματα κτλ. -->
-    <title>Mini Expenses - Step 1</title>    <!-- Ο τίτλος που εμφανίζεται στο tab του browser. -->
-
+ <meta charset="UTF-8">     <!-- Δηλώνει χρήση UTF-8 κωδικοποίησης. Επιτρέπει ελληνικά, σύμβολα, νομίσματα κτλ. -->
+ <title>Mini Expenses</title>    <!-- Ο τίτλος που εμφανίζεται στο tab του browser. -->
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 
   /* =================================
@@ -155,6 +155,53 @@
       background: white;
       border: 1px solid #ccc;
   }
+
+
+  /* ΣΥΜΠΕΡΙΦΟΡΑ ΦΟΡΜΑΣ ΣΤΟ ΚΙΝΗΤΟ (Υπερισχύει γιατί είναι στο τέλος του style)
+
+  @media (max-width: 600px) {
+
+  body {
+    font-size: 18px;
+  }
+
+  .section {
+    max-width: 95%;
+    margin: 10px auto;
+    padding: 16px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-row label {
+    width: 100%;
+    margin-bottom: 4px;
+  }
+
+  .form-row input {
+    width: 100%;
+    font-size: 18px;
+    padding: 8px;
+  }
+
+  .button-row {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .button-row button {
+    font-size: 16px;
+    padding: 8px 10px;
+  }
+
+  .data-table {
+    font-size: 16px;
+  }
+}
+
 
 
 </style>
