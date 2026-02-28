@@ -26,6 +26,7 @@
     background-color: #f4f6f8;        /* Απαλό γκρι φόντο */
     margin: 0;      /* Εξωτερικό περιθώριο: απόσταση του στοιχείου από τα άλλα στοιχεία */
     padding: 0;     /* Εσωτερικό περιθώριο: κενός χώρος ανάμεσα στο περιεχόμενο και τα όρια του στοιχείου */
+    align-items: center;
   }  
 
   /* ===============================
@@ -45,6 +46,7 @@
       border: 1px solid #ccc;          /* Λεπτό γκρι περίγραμμα */
       border-radius: 8px;              /* Ελαφρώς στρογγυλεμένες γωνίες */
       /* Συνολικό πλάτος = 400 + 20 + 20 = 440. Το padding προστίθεται στο εξωτερικό μέγεθος, δεν μεγαλώνει το εσωτερικό κουτί. Μεγαλώνει το συνολικό ορατό μέγεθος. */
+      align-content: center;
   }
 
    /* ===============================
@@ -57,6 +59,7 @@
     max-width: 420px;      /* ίδιο με της φόρμας */
     /* margin: 20px auto;  auto = κεντράρισμα */
     text-align: center;
+    margin-bottom: 10px;
   }
 
   .form-row {
@@ -84,12 +87,28 @@
     display: flex;
     flex-wrap: wrap;   /* επιτρέπει να σπάνε γραμμή */
     gap: 6px;          /* απόσταση μεταξύ κουμπιών */
-    margin-top: 8px;
+    margin-top: 0px;    
+    /* margin-left: 20px;  Ξεκινάνε από αριστερά  */
+    margin-bottom: 14px;
+    justify-content: center;  /* κεντράρισμα των κουμπιών οριζόντια, align-items = κάθετη στοίχιση */
+                      /* justify-content: flex-start (αριστερά), justify-content: flex-end (δεξιά) */
+  }
+
+
+  .button-row1 {
+    display: flex;
+    flex-wrap: wrap;   /* επιτρέπει να σπάνε γραμμή */
+    gap: 1px;          /* απόσταση μεταξύ κουμπιών */
+    margin-top: 0px;    
+    /* margin-left: 20px;  Ξεκινάνε από αριστερά  */
+    margin-bottom: 5px;
+    justify-content: center;  /* κεντράρισμα των κουμπιών οριζόντια, align-items = κάθετη στοίχιση */
+                      /* justify-content: flex-start (αριστερά), justify-content: flex-end (δεξιά) */
   }
 
   
   .button-row + .button-row {
-    margin-top: 2px;   /* Μικρό κενό μόνο μεταξύ των δύο σειρών */
+    margin-top: 1px;   /* Μικρό κενό μόνο μεταξύ των δύο σειρών */
   }
 
  
@@ -109,6 +128,8 @@
       font-size: 13px;
   }
 
+
+
   .button-row button:hover {    /* Όταν το ποντίκι πάει πάνω από το κουμπί→ άλλαξε το background.*/
     background-color: #e2e6ea;  /* Αλλαγή χρώματος στο hover */
   }
@@ -123,7 +144,7 @@
   /* Μορφοποίηση πίνακα */
   .data-table {      
       width: 100%;            /* Πάρε όλο το διαθέσιμο πλάτος του container σου (μόνο για κινητό)*/      
-      max-width: 550px;        /* Καθορισμός μεγίστου πλάτους */
+      max-width: 450px;        /* Καθορισμός μεγίστου πλάτους */
       border-collapse: collapse;
       /* min-width: 700px;  κρατάει σωστό πλάτος σε desktop */
   }
@@ -146,6 +167,7 @@
   .data-table td {
       border: 1px solid #ccc;
       padding: 6px;
+      font-size: 13px;
   }
 
   /* Κεφαλίδες κεντραρισμένες */
@@ -186,7 +208,7 @@
   }  
 
   #resultsInfo {
-    font-size: 13px;        /* πολύ μικρό */
+    font-size: 11px;        /* πολύ μικρό */
     font-weight: normal;    /* όχι bold */
     color: #555;            /* πιο ήπιο */
     margin-top: 10px;       /* να φύγει πιο κάτω */
@@ -198,11 +220,19 @@
     flex-wrap: wrap;   /* επιτρέπει να σπάνε γραμμή */
     gap: 6px;          /* απόσταση μεταξύ κουμπιών */
     margin-top: 6px;
-    padding: 6px;
-  }
+   padding: 6px;
+ }
 
 
-
+ .status-bar {
+    margin-top: 12px;
+    padding: 6px 8px;
+    font-size: 11px;
+    color: #555;
+    background-color: #f8f9fa;
+    border-top: 1px solid #ddd;
+    border-radius: 0 0 6px 6px;
+}
 
 
 </style>
@@ -213,12 +243,33 @@
 
 <body>                      <!-- Το body περιέχει Ο,ΤΙ φαίνεται στην οθόνη. -->
 
+<h1>My Expenses</h1>      <!-- Επικεφαλίδα επιπέδου 1. Είναι σημασιολογικό στοιχείο (semantic). -->    
 
+<div class="button-row1">
+      <button type="button" id="toggleTableBtn">Hide Records</button> <!-- ΚΟΥΜΠΙ ΓΙΑ ΚΡΥΨΙΜΟ ΠΙΝΑΚΑ -->
+      <button type="button" id="summaryBtn">Categories_sum</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
+      <button type="button" id="paymentBtn">Payments_sum</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
+      <button type="button" id="supplierBtn">Suppliers_sum</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
+      <button type="button" id="monthBtn">Months_sum</button>  <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
+      <button type="button" id="yearBtn">Years_sum</button>  <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
+</div>
+
+<div id="resultsInfo" style="margin-bottom:8px; font-weight:bold;"></div>
 
 <form>   <!-- Η φόρμα ομαδοποιεί πεδία εισαγωγής.  Δεν κάνει ακόμη τίποτα. Απλώς οργανώνει δεδομένα. -->
 
-  <h1>My Expenses</h1>      <!-- Επικεφαλίδα επιπέδου 1. Είναι σημασιολογικό στοιχείο (semantic). -->
+  
   <div class="section">
+    
+    <div class="button-row">       
+        <button type="button" id="saveBtn">Save</button>
+        <button type="button" id="newBtn">New</button>
+        <button type="button" id="delBtn">Del</button>     
+        <button type="button" id="previousBtn">Prev</button>   
+        <button type="button" id="nextBtn">Next</button>  
+        <button type="button" id="firstBtn">First</button>
+        <button type="button" id="lastBtn">Last</button>         
+    </div>  
     
     <div class="form-row">    <!-- Το div είναι δομικό κουτί, για ομαδοποίηση στοιχείων. -->
         <label>Date</label>  
@@ -269,28 +320,11 @@
         <input type="number" id="amount">        
     </div>
      
-    <div class="button-row">       
-        <button type="button" id="saveBtn">Save</button>
-        <button type="button" id="newBtn">New</button>
-        <button type="button" id="delBtn">Del</button>     
-        <button type="button" id="previousBtn">Prev</button>   
-        <button type="button" id="nextBtn">Next</button>  
-        <button type="button" id="firstBtn">First</button>
-        <button type="button" id="lastBtn">Last</button>         
-    </div>    
+      
     
     <div class="status-bar" id="statusBar"></div>
     
-  <div class="button-row">
-      <button type="button" id="toggleTableBtn">Hide Records</button> <!-- ΚΟΥΜΠΙ ΓΙΑ ΚΡΥΨΙΜΟ ΠΙΝΑΚΑ -->
-      <button type="button" id="summaryBtn">Categories_sum</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
-      <button type="button" id="paymentBtn">Payments_sum</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
-      <button type="button" id="supplierBtn">Suppliers_sum</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
-      <button type="button" id="monthBtn">Months_sum</button>  <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
-      <button type="button" id="yearBtn">Years_sum</button>  <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
-  </div>
-
-  <div id="resultsInfo" style="margin-bottom:8px; font-weight:bold;"></div>
+  
 
 </div>  
 
@@ -391,13 +425,22 @@ document.getElementById("saveBtn").addEventListener("click", function () {
          // μετέτρεψέ τον σε string, αποθήκευσέ τον μόνιμα στο local σαν miniExpensesRecords. Το JSON είναι η «γλώσσα μεταφοράς δεδομένων» του διαδικτύου.                                                    
     displayRecord();    // Εμφανίζουμε την εγγραφή που μόλις αποθηκεύτηκε
     renderTable(records);
+
+    // ===== STATUS MESSAGE =====
+    let status = document.getElementById("statusBar");
+    status.textContent = "Η εγγραφή αποθηκεύτηκε";
 });
+
+
+
 
 // ================= NEW =================
 document.getElementById("newBtn").addEventListener("click", function () {
     currentIndex = -1;
     document.querySelectorAll("input").forEach(i => i.value = "");  // Καθαρισμός όλων των πεδίων
 });
+
+
 
 // ================= DELETE =================
 document.getElementById("delBtn").addEventListener("click", function () {
@@ -415,7 +458,15 @@ document.getElementById("delBtn").addEventListener("click", function () {
     else document.querySelectorAll("input").forEach(i => i.value = ""); // αλλιώς, καθαρισμός πεδίων
 
     renderTable(records);
+
+    // ===== STATUS MESSAGE =====
+    let status = document.getElementById("statusBar");
+    status.textContent = "Η εγγραφή διαγράφηκε";
 });
+
+
+
+
 
 // ================= NAVIGATION =================
 // document.getElementById("previousBtn").addEventListener("click", function() {
@@ -462,6 +513,14 @@ function displayRecord() {
     document.getElementById("supplier").value = record.supplier;
     document.getElementById("category").value = record.category;
     document.getElementById("amount").value = record.amount;
+
+    let status = document.getElementById("statusBar");
+
+    if (records.length === 0) {
+        status.textContent = "Δεν υπάρχουν εγγραφές";
+    } else {
+        status.textContent = "Εγγραφή " + (currentIndex + 1) + " από " + records.length;
+    }
 }
 
 
