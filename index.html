@@ -60,6 +60,7 @@
     /* margin: 20px auto;  auto = κεντράρισμα */
     text-align: center;
     margin-bottom: 10px;
+    font-size: 20px;
   }
 
   .form-row {
@@ -145,7 +146,7 @@
   /* Μορφοποίηση πίνακα */
   .data-table {      
       width: 100%;            /* Πάρε όλο το διαθέσιμο πλάτος του container σου (μόνο για κινητό)*/      
-      max-width: 450px;        /* Καθορισμός μεγίστου πλάτους */
+      max-width: 470px;        /* Καθορισμός μεγίστου πλάτους */
       border-collapse: collapse;
       /* min-width: 700px;  κρατάει σωστό πλάτος σε desktop */
   }
@@ -236,6 +237,30 @@
 }
 
 
+.table-box {
+  position: relative;
+  margin-top: 10px;
+}
+
+.close-table {
+  position: absolute;
+  top: 6px;
+  left: 6px;   /* ← ΤΟ ΒΑΖΟΥΜΕ ΑΡΙΣΤΕΡΑ */
+  border: none;
+  background: #eee;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.close-table:hover {
+  background: #f2c2c2;
+  color: #900;
+}
+
+
+
 </style>
 
 </head>
@@ -244,20 +269,20 @@
 
 <body>                      <!-- Το body περιέχει Ο,ΤΙ φαίνεται στην οθόνη. -->
 
-<h1>My Expenses</h1>      <!-- Επικεφαλίδα επιπέδου 1. Είναι σημασιολογικό στοιχείο (semantic). -->    
+<h1>ΤΑ ΕΞΟΔΑ ΜΟΥ</h1>      <!-- Επικεφαλίδα επιπέδου 1. Είναι σημασιολογικό στοιχείο (semantic). -->    
 
 <div class="button-row1">
-      <button type="button" id="toggleTableBtn">Hide Records</button> <!-- ΚΟΥΜΠΙ ΓΙΑ ΚΡΥΨΙΜΟ ΠΙΝΑΚΑ -->
-      <button type="button" id="summaryBtn">Categories_sum</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
-      <button type="button" id="paymentBtn">Payments_sum</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
-      <button type="button" id="supplierBtn">Suppliers_sum</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
-      <button type="button" id="monthBtn">Months_sum</button>  <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
-      <button type="button" id="yearBtn">Years_sum</button>  <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
+      <button type="button" id="toggleTableBtn">Πίνακας</button> <!-- ΚΟΥΜΠΙ ΓΙΑ ΚΡΥΨΙΜΟ ΠΙΝΑΚΑ -->
+      <button type="button" id="categoryBtn">Κατηγορίες</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
+      <button type="button" id="paymentBtn">Πληρωμές</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
+      <button type="button" id="supplierBtn">Προμηθευτές</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
+      <button type="button" id="monthBtn">Μήνες</button>  <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
+      <button type="button" id="yearBtn">Έτη</button>  <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
 </div>
 
-<div id="resultsInfo" style="margin-bottom:8px; font-weight:bold;"></div>
 
-<form>   <!-- Η φόρμα ομαδοποιεί πεδία εισαγωγής.  Δεν κάνει ακόμη τίποτα. Απλώς οργανώνει δεδομένα. -->
+
+<form id="entryForm">   <!-- Η φόρμα ομαδοποιεί πεδία εισαγωγής.  Δεν κάνει ακόμη τίποτα. Απλώς οργανώνει δεδομένα. -->
 
   
   <div class="section">
@@ -273,27 +298,27 @@
     </div>  
     
     <div class="form-row">    <!-- Το div είναι δομικό κουτί, για ομαδοποίηση στοιχείων. -->
-        <label>Date</label>  
+        <label>Ημερομηνία</label>  
         <input type="date" id="date"> <!-- Πεδίο ημερομηνίας.Το type καθορίζει τη συμπεριφορά. -->
     </div>
 
     <div class="form-row">
-        <label>Document</label>
+        <label>Παραστατικό</label>
         <input type="text" id="document" list="documentList">   <!-- ΠΕΔΙΟ ΛΙΣΤΑΣ ΤΙΜΩΝ -->
         <datalist id="documentList">
              <!-- Οι επιλογές θα μπαίνουν δυναμικά, βάζουμε μερικές τώρα. -->
-             <option value="ΑΠΟΔΕΙΞΗ">
-             <option value="ΤΙΜΟΛΟΓΙΟ">
+             <option value="ΑΠΟΔ. ">
+             <option value="ΤΙΜ. ">
              <option value="ΑΝΕΥ">
         </datalist>
     </div>
     
     <div class="form-row">
-        <label>Payment</label>
+        <label>Πληρωμή</label>
         <input type="text" id="payment" list="paymentList">   <!-- ΠΕΔΙΟ ΛΙΣΤΑΣ ΤΙΜΩΝ -->
         <datalist id="paymentList">
              <!-- Οι επιλογές θα μπαίνουν δυναμικά, βάζουμε μερικές τώρα. -->
-             <option value="Μετρητοίς">
+             <option value="Μετρητά">
              <option value="Κάρτα">
              <option value="E-banking">
         </datalist>
@@ -301,23 +326,32 @@
 
 
     <div class="form-row">
-        <label>Supplier</label>
+        <label>Προμηθευτής</label>
         <input type="text" id="supplier">  <!-- Πεδίο κειμένου -->      
     </div>
 
     <div class="form-row">
-        <label>Category</label>
+        <label>Κατηγορία</label>
         <input type="text" id="category" list="categoryList">   <!-- ΠΕΔΙΟ ΛΙΣΤΑΣ ΤΙΜΩΝ -->
         <datalist id="categoryList">
              <!-- Οι επιλογές θα μπαίνουν δυναμικά, βάζουμε μερικές τώρα. -->
-             <option value="ΤΡΟΦΙΜΑ">
-             <option value="ΚΑΥΣΙΜΑ">
-             <option value="ΕΝΟΙΚΙΟ">
+             <option value="Τρόφιμα">
+             <option value="Ενδύματα">
+             <option value="Υποδήματα">
+             <option value="Είδη καθαριότητας">
+              <option value="Είδη υγιεινής">
+             <option value="Τηλεφωνικά">
+             <option value="Ύδρευση">
+             <option value="Θέρμανση"> 
+             <option value="Έξοδα αυτ/του">
+             <option value="Διασκέδαση">
+             <option value="Διακοπές">
+             <option value="Ιατρικά">           
         </datalist>
     </div>
 
     <div class="form-row">
-        <label>Amount</label>
+        <label>Ποσό</label>
         <input type="number" id="amount">        
     </div>
      
@@ -331,14 +365,17 @@
 
 </form>
 
-<hr>
 
+
+<div id="resultsInfo" style="margin-bottom:8px; font-weight:bold;"></div>
+
+<hr>
 
 <!-- <h3>Όλες οι Εγγραφές</h3> -->
 <div id="tableContainer"></div>
-<div id="summaryContainer" style="margin-top:15px;"></div>
-<div id="summary2Container" style="margin-top:15px;"></div>
-<div id="summary3Container" style="margin-top:15px;"></div>
+<div id="categoryContainer" style="margin-top:15px;"></div>
+<div id="paymentContainer" style="margin-top:15px;"></div>
+<div id="supplierContainer" style="margin-top:15px;"></div>
 <div id="summaryMonthContainer" style="margin-top:15px;"></div>
 <div id="summaryYearContainer" style="margin-top:15px;"></div>
 
@@ -375,6 +412,8 @@ if (savedData) {                       // Εάν υπάρχουν δεδομέν
     currentIndex = records.length - 1;
     if (records.length > 0) displayRecord();
 }
+
+
 
 // ================= SAVE =================
 document.getElementById("saveBtn").addEventListener("click", function () {
@@ -503,6 +542,8 @@ document.getElementById("lastBtn").onclick = () => {
     }
 };
 
+
+
 // ================= DISPLAY =================
 function displayRecord() {
 
@@ -530,6 +571,43 @@ function displayRecord() {
 
 
 
+
+// ================= WRAP TABLE =================
+function wrapTable(htmlContent, containerId, buttonId) {
+    return `
+    <div class="table-box">
+        <button class="close-table"
+            onclick="
+                document.getElementById('${containerId}').style.display='none';
+                document.getElementById('${buttonId}').disabled=false;
+            ">
+            ✖
+        </button>
+        <div class="table-wrapper">
+            ${htmlContent}
+        </div>
+    </div>
+    `;
+}
+
+
+function closeTable() {
+
+    const container = document.getElementById("tableContainer");
+    const btn = document.getElementById("toggleTableBtn");
+    const form = document.getElementById("entryForm");
+
+    // Κρύβουμε τον πίνακα
+    if (container) container.style.display = "none";
+
+    // Επανενεργοποιούμε το κουμπί
+    if (btn) btn.disabled = false;
+
+    // Επανεμφανίζουμε τη φόρμα εισαγωγής (επιστροφή σε mode καταχώρισης)
+    if (form) form.style.display = "block";
+}
+
+
 // ================= RENDER TABLE =================
 function renderTable(dataArray) {
 
@@ -545,18 +623,17 @@ function renderTable(dataArray) {
 
     // Κεφαλίδες
     html += "<tr>";
-    html += "<th>Date</th>";
-    // html += "<th>Document</th>";    
-    // html += "<th>Payment</th>";
-    // html += "<th>Supplier</th>";
+    //html += "<th>Ημερ.</th>";   
+    html += "<th style='text-align:right; position:relative;'>Ημερομ. <span class='close-x' style='position:absolute; left:6px; cursor:pointer;'>✖</span></th>";
 
-    html += "<th style='white-space:nowrap;'>Payment <select id='paymentHeaderFilter' class='header-filter'></select></th>";    //  ........c1..........
+    html += "<th style='white-space:nowrap;'>Πληρωμή <select id='paymentHeaderFilter' class='header-filter'></select></th>";    //  ........c1..........
     
-    html += "<th style='white-space:nowrap;'>Supplier <select id='supplierHeaderFilter' class='header-filter'></select></th>";    //  ........c..........
+    html += "<th style='white-space:nowrap;'>Προμηθευτής <select id='supplierHeaderFilter' class='header-filter'></select></th>";    //  ........c..........
    
-    html += "<th style='white-space:nowrap;'>Category <select id='categoryHeaderFilter' class='header-filter'></select></th>";     
+    html += "<th style='white-space:nowrap;'>Κατηγορία <select id='categoryHeaderFilter' class='header-filter'></select></th>";     
     
-    html += "<th>Amount</th>";
+    html += "<th>Ποσό</th>";
+
     html += "</tr>";
 
     let total = 0;
@@ -587,13 +664,19 @@ function renderTable(dataArray) {
 
     // Γραμμή συνόλου
     html += "<tr>";
-    html += "<td colspan='4' style='text-align:right;font-weight:bold;'>Total</td>";
+    html += "<td colspan='4' style='text-align:right;font-weight:bold;'>Σύνολο</td>";
     html += "<td class='amount-cell' style='font-weight:bold;'>" + total.toFixed(2) + "</td>";
     html += "</tr>";
 
-    html += "</table></div>";
+    html += "</table></div>";                                
 
-    container.innerHTML = html;
+    container.innerHTML = wrapTable(html, "tableContainer", "toggleTableBtn");
+
+    // Ενεργοποίηση του Χ μετά το render
+    let closeBtn = container.querySelector(".close-x");
+    if (closeBtn) {
+        closeBtn.addEventListener("click", closeTable);
+    }
 
     // ===== Header Filter =====
     let select_1 = document.getElementById("categoryHeaderFilter");
@@ -677,93 +760,45 @@ function renderTable(dataArray) {
 
 }
 
-// ΣΥΝΑΡΤΗΣΗ ΕΞΑΓΩΓΗΣ ΔΕΔΟΜΕΝΩΝ
-function exportData() {
-    const data = localStorage.getItem("miniExpensesRecords");
-    if (!data) {
-        alert("Δεν υπάρχουν δεδομένα για εξαγωγή.");
-        return;
-    }
-
-    const blob = new Blob([data], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "mini-expenses-backup.json";
-    a.click();
-
-    URL.revokeObjectURL(url);
-}
 
 
-// ΣΥΝΑΡΤΗΣΗ ΕΙΣΑΓΩΓΗΣ ΔΕΔΟΜΕΝΩΝ
-function importData() {
-    const fileInput = document.getElementById("importFile");
-    fileInput.click();
-
-    fileInput.onchange = function () {
-        const file = fileInput.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            try {
-                const importedData = JSON.parse(e.target.result);
-
-                if (!confirm("Η εισαγωγή θα αντικαταστήσει όλα τα υπάρχοντα δεδομένα. Συνέχεια;"))
-                    return;
-
-                localStorage.setItem("miniExpensesRecords", JSON.stringify(importedData));
-                alert("Η εισαγωγή ολοκληρώθηκε.");
-                location.reload();
-            } catch (error) {
-                alert("Μη έγκυρο αρχείο JSON.");
-            }
-        };
-
-        reader.readAsText(file);
-    };
-}
+// ΑΡΧΙΚΑ ΚΡΥΒΟΥΜΕ ΤΟΝ ΠΙΝΑΚΑ
+document.getElementById('tableContainer').style.display='none';
+document.getElementById('toggleTableBtn').disabled=false;
 
 
-// ΣΥΝΑΡΤΗΣΗ ΚΡΥΨΙΜΑΤΟΣ ΠΙΝΑΚΑ
-let tableVisible = false;
-document.getElementById("tableContainer").style.display = "none";
-document.getElementById("toggleTableBtn").textContent = "Show Records";
-
+// ΚΟΥΜΠΙ ΕΜΦΑΝΙΣΗΣ ΒΑΣΙΚΟΥ ΠΙΝΑΚΑ
 document.getElementById("toggleTableBtn").addEventListener("click", function () {
 
-    let tableDiv = document.getElementById("tableContainer");
+    // Δημιουργούμε τον πίνακα
+    renderTable(records);
 
-    if (tableVisible) {
-        tableDiv.style.display = "none";
-        this.textContent = "Show Records";
-        tableVisible = false;
-    } else {
+    // Τον εμφανίζουμε
+    document.getElementById("tableContainer").style.display = "block";
+    
+    // Αποκρύπτουμε τη φόρμα ώστε ο πίνακας να καταλαμβάνει όλο τον διαθέσιμο χώρο 
+    document.getElementById("entryForm").style.display = "none";  
 
-        // 🔥 Δημιουργούμε τον πίνακα όταν ανοίγει
-        renderTable(records);
-
-        tableDiv.style.display = "block";
-        this.textContent = "Hide Records";
-        tableVisible = true;
-    }
+    // Απενεργοποιούμε το κουμπί για να μην δημιουργηθεί διπλό render πίνακα
+    this.disabled = true;
 });
 
 
 
+
+
+
 // ================= SUMMARY BY CATEGORY =================
-let summaryVisible = false;
+let categoryVisible = false;
 
-document.getElementById("summaryBtn").addEventListener("click", function () {
+document.getElementById("categoryBtn").addEventListener("click", function () {
 
-    let container = document.getElementById("summaryContainer");
+    let container = document.getElementById("categoryContainer");
 
-    if (summaryVisible) {
+    if (categoryVisible) {
         container.style.display = "none";
-        this.textContent = "Categories-sum";
-        summaryVisible = false;
+        // this.textContent = "Κατηγορίες";
+        categoryVisible = false;
         return;
     }
 
@@ -787,7 +822,7 @@ document.getElementById("summaryBtn").addEventListener("click", function () {
     }
 
     let html = "<div class='table-wrapper'><table class='data-table'>";
-    html += "<tr><th>Category</th><th>Amount</th><th>%</th><th>Graph</th></tr>";
+    html += "<tr><th>Κατηγορία</th><th>Ποσό</th><th>%</th><th>Γράφημα</th></tr>";
 
     // Μετατρέπουμε το object σε array για να μπορούμε να κάνουμε sort
     let sortedCategories = Object.entries(totalsByCategory);
@@ -813,7 +848,7 @@ document.getElementById("summaryBtn").addEventListener("click", function () {
     }
 
     html += "<tr>";
-    html += "<td style='font-weight:bold;'>Total</td>";
+    html += "<td style='font-weight:bold;'>Σύνολο</td>";
     html += "<td class='amount-cell' style='font-weight:bold;'>" + grandTotal.toFixed(2) + "</td>";
     html += "<td style='font-weight:bold;'>100.00%</td>";
     html += "<td></td>";
@@ -821,25 +856,31 @@ document.getElementById("summaryBtn").addEventListener("click", function () {
 
     html += "</table></div>";
 
-    container.innerHTML = html;
+    container.innerHTML = wrapTable(html, "categoryContainer", "categoryBtn");
+    
     container.style.display = "block";
-    this.textContent = "Hide Categories";
-    summaryVisible = true;
+    // this.textContent = "Κατηγορίες΄Χ΄";
+    categoryVisible = true;
+    categoryBtn.visible = false;
+    // Απενεργοποιούμε το κουμπί
+    this.disabled = true;
 });
  
 
 
+
+
 // ================= SUMMARY BY METHOD OF PAYMENT =================
-let summary2Visible = false;
+let paymentVisible = false;
 
 document.getElementById("paymentBtn").addEventListener("click", function () {
 
-    let container = document.getElementById("summary2Container");
+    let container = document.getElementById("paymentContainer");
 
-    if (summary2Visible) {
+    if (paymentVisible) {
         container.style.display = "none";
-        this.textContent = "Payments_sum";
-        summary2Visible = false;
+        this.textContent = "Πληρωμές";
+        paymentVisible = false;
         return;
     }
 
@@ -863,7 +904,7 @@ document.getElementById("paymentBtn").addEventListener("click", function () {
     }
 
     let html = "<div class='table-wrapper'><table class='data-table'>";
-    html += "<tr><th>Payment</th><th>Amount</th><th>%</th><th>Graph</th></tr>";
+    html += "<tr><th>Πληρωμή</th><th>Ποσό</th><th>%</th><th>Γράφημα</th></tr>";
 
     // Μετατρέπουμε το object σε array για να μπορούμε να κάνουμε sort
     let sortedPayments = Object.entries(totalsByPayment);
@@ -889,7 +930,7 @@ document.getElementById("paymentBtn").addEventListener("click", function () {
     }
 
     html += "<tr>";
-    html += "<td style='font-weight:bold;'>Total</td>";
+    html += "<td style='font-weight:bold;'>Σύνολο</td>";
     html += "<td class='amount-cell' style='font-weight:bold;'>" + grandTotal.toFixed(2) + "</td>";
     html += "<td style='font-weight:bold;'>100.00%</td>";
     html += "<td></td>";
@@ -897,26 +938,31 @@ document.getElementById("paymentBtn").addEventListener("click", function () {
 
     html += "</table></div>";
 
-    container.innerHTML = html;
+    container.innerHTML = wrapTable(html, "paymentContainer", "paymentBtn");
+
     container.style.display = "block";
-    this.textContent = "Hide Payments";
-    summary2Visible = true;
+    //this.textContent = "Πληρωμές΄Χ΄";
+    paymentVisible = true;
+    // Απενεργοποιούμε το κουμπί
+    this.disabled = true;
+
 });
  
 
 
 
+
 // ================= SUMMARY BY SUPPLIER =================
-let summary3Visible = false;
+let supplierVisible = false;
 
 document.getElementById("supplierBtn").addEventListener("click", function () {
 
-    let container = document.getElementById("summary3Container");
+    let container = document.getElementById("supplierContainer");
 
-    if (summary3Visible) {
+    if (supplierVisible) {
         container.style.display = "none";
-        this.textContent = "Supplier_sum";
-        summary3Visible = false;
+        this.textContent = "Προμηθευτές";
+        supplierVisible = false;
         return;
     }
 
@@ -940,7 +986,7 @@ document.getElementById("supplierBtn").addEventListener("click", function () {
     }
 
     let html = "<div class='table-wrapper'><table class='data-table'>";
-    html += "<tr><th>Supplier</th><th>Amount</th><th>%</th><th>Graph</th></tr>";
+    html += "<tr><th>Προμηθευτής</th><th>Ποσό</th><th>%</th><th>Γράφημα</th></tr>";
 
     // Μετατρέπουμε το object σε array για να μπορούμε να κάνουμε sort
     let sortedSuppliers = Object.entries(totalsBySupplier);
@@ -966,7 +1012,7 @@ document.getElementById("supplierBtn").addEventListener("click", function () {
     }
 
     html += "<tr>";
-    html += "<td style='font-weight:bold;'>Total</td>";
+    html += "<td style='font-weight:bold;'>Σύνολο</td>";
     html += "<td class='amount-cell' style='font-weight:bold;'>" + grandTotal.toFixed(2) + "</td>";
     html += "<td style='font-weight:bold;'>100.00%</td>";
     html += "<td></td>";
@@ -974,12 +1020,18 @@ document.getElementById("supplierBtn").addEventListener("click", function () {
 
     html += "</table></div>";
 
-    container.innerHTML = html;
+    container.innerHTML = wrapTable(html, "supplierContainer", "supplierBtn");
+
     container.style.display = "block";
-    this.textContent = "Hide Suppliers";
-    summary3Visible = true;
+    //this.textContent = "Προμηθευτές΄Χ΄";
+    supplierVisible = true;
+    // Απενεργοποιούμε το κουμπί
+    this.disabled = true;
 });
  
+
+
+
 
 
 
@@ -1008,7 +1060,7 @@ document.getElementById("monthBtn").addEventListener("click", function () {
 
     if (summaryMonthVisible) {
         container.style.display = "none";
-        this.textContent = "Months_sum";
+        this.textContent = "Μήνες";
         summaryMonthVisible = false;
         return;
     }
@@ -1046,7 +1098,7 @@ document.getElementById("monthBtn").addEventListener("click", function () {
     }
 
     let html = "<div class='table-wrapper'><table class='data-table'>";
-    html += "<tr><th>Month</th><th>Amount</th><th>%</th><th>Graph</th></tr>";
+    html += "<tr><th>Μήνας</th><th>Ποσό</th><th>%</th><th>Γράφημα</th></tr>";
 
     // Μετατρέπουμε σε array
     let sortedMonths = Object.entries(totalsByMonth);
@@ -1074,7 +1126,7 @@ document.getElementById("monthBtn").addEventListener("click", function () {
     }
 
     html += "<tr>";
-    html += "<td style='font-weight:bold;'>Total</td>";
+    html += "<td style='font-weight:bold;'>Σύνολο</td>";
     html += "<td class='amount-cell' style='font-weight:bold;'>" + grandTotal.toFixed(2) + "</td>";
     html += "<td style='font-weight:bold;'>100.00%</td>";
     html += "<td></td>";
@@ -1082,11 +1134,16 @@ document.getElementById("monthBtn").addEventListener("click", function () {
 
     html += "</table></div>";
 
-    container.innerHTML = html;
+    container.innerHTML = wrapTable(html, "summaryMonthContainer", "monthBtn");
+
     container.style.display = "block";
-    this.textContent = "Hide Months";
+    //this.textContent = "Μήνες΄Χ΄";
     summaryMonthVisible = true;
+    // Απενεργοποιούμε το κουμπί
+    this.disabled = true;
 });
+
+
 
 
 
@@ -1095,11 +1152,11 @@ let summaryYearVisible = false;
 
 document.getElementById("yearBtn").addEventListener("click", function () {
 
-    let container = document.getElementById("summaryYearContainer");
+    let container = document.getElementById("summaryYearContainer", "yearBtn");
 
     if (summaryYearVisible) {
         container.style.display = "none";
-        this.textContent = "Years_sum";
+        this.textContent = "Έτη";
         summaryYearVisible = false;
         return;
     }
@@ -1137,7 +1194,7 @@ document.getElementById("yearBtn").addEventListener("click", function () {
     }
 
     let html = "<div class='table-wrapper'><table class='data-table'>";
-    html += "<tr><th>Year</th><th>Amount</th><th>%</th><th>Graph</th></tr>";
+    html += "<tr><th>Έτος</th><th>Ποσό</th><th>%</th><th>Γράφημα</th></tr>";
 
     // Μετατρέπουμε σε array
     let sortedYears = Object.entries(totalsByYear);
@@ -1165,7 +1222,7 @@ document.getElementById("yearBtn").addEventListener("click", function () {
     }
 
     html += "<tr>";
-    html += "<td style='font-weight:bold;'>Total</td>";
+    html += "<td style='font-weight:bold;'>Σύνολο</td>";
     html += "<td class='amount-cell' style='font-weight:bold;'>" + grandTotal.toFixed(2) + "</td>";
     html += "<td style='font-weight:bold;'>100.00%</td>";
     html += "<td></td>";
@@ -1173,13 +1230,68 @@ document.getElementById("yearBtn").addEventListener("click", function () {
 
     html += "</table></div>";
 
-    container.innerHTML = html;
+    container.innerHTML = wrapTable(html, "summaryYearContainer", "yearBtn");
+
     container.style.display = "block";
-    this.textContent = "Hide Years";
+    //this.textContent = "Έτη΄Χ΄";
     summaryYearVisible = true;
+    // Απενεργοποιούμε το κουμπί
+    this.disabled = true;
 });
 
 
+
+
+// ΣΥΝΑΡΤΗΣΗ ΕΞΑΓΩΓΗΣ ΔΕΔΟΜΕΝΩΝ
+function exportData() {
+    const data = localStorage.getItem("miniExpensesRecords");
+    if (!data) {
+        alert("Δεν υπάρχουν δεδομένα για εξαγωγή.");
+        return;
+    }
+
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "mini-expenses-backup.json";
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+
+
+
+
+// ΣΥΝΑΡΤΗΣΗ ΕΙΣΑΓΩΓΗΣ ΔΕΔΟΜΕΝΩΝ
+function importData() {
+    const fileInput = document.getElementById("importFile");
+    fileInput.click();
+
+    fileInput.onchange = function () {
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            try {
+                const importedData = JSON.parse(e.target.result);
+
+                if (!confirm("Η εισαγωγή θα αντικαταστήσει όλα τα υπάρχοντα δεδομένα. Συνέχεια;"))
+                    return;
+
+                localStorage.setItem("miniExpensesRecords", JSON.stringify(importedData));
+                alert("Η εισαγωγή ολοκληρώθηκε.");
+                location.reload();
+            } catch (error) {
+                alert("Μη έγκυρο αρχείο JSON.");
+            }
+        };
+
+        reader.readAsText(file);
+    };
+}
 
 
 
