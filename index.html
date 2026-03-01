@@ -243,23 +243,35 @@
 }
 
 .close-table {
-  position: absolute;
-  top: 6px;
-  left: 6px;   /* ← ΤΟ ΒΑΖΟΥΜΕ ΑΡΙΣΤΕΡΑ */
-  border: none;
-  background: #eee;
-  border-radius: 4px;
-  padding: 2px 6px;
-  font-size: 12px;
-  cursor: pointer;
+    position: absolute;
+    top: 6px;
+    left: 0px;
+
+    background: #eee;
+    border: none;
+    border-radius: 0 0 8px 0;
+
+    font-size: 18px;
+
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
 }
+
 
 .close-table:hover {
   background: #f2c2c2;
   color: #900;
 }
 
-
+.table-wrapper {
+    padding-top: 21px;
+}
 
 </style>
 
@@ -370,14 +382,12 @@
 <div id="resultsInfo" style="margin-bottom:8px; font-weight:bold;"></div>
 
 <hr>
-
-<!-- <h3>Όλες οι Εγγραφές</h3> -->
-<div id="tableContainer"></div>
-<div id="categoryContainer" style="margin-top:15px;"></div>
-<div id="paymentContainer" style="margin-top:15px;"></div>
-<div id="supplierContainer" style="margin-top:15px;"></div>
-<div id="summaryMonthContainer" style="margin-top:15px;"></div>
-<div id="summaryYearContainer" style="margin-top:15px;"></div>
+<div id="tableContainer"></div>                                    <!-- Πίνακας Όλων των Εγγραφών -->
+<div id="categoryContainer" style="margin-top:15px;"></div>        <!-- Πίνακας Κατηγοριών Δαπανών -->
+<div id="paymentContainer" style="margin-top:15px;"></div>         <!-- Πίνακας Δαπανών Κατά Τρόπο Πληρωμής -->
+<div id="supplierContainer" style="margin-top:15px;"></div>        <!-- Πίνακας Δαπανών Προμηθευτή -->
+<div id="summaryMonthContainer" style="margin-top:15px;"></div>    <!-- Πίνακας Δαπανών Κατά Μήνα -->
+<div id="summaryYearContainer" style="margin-top:15px;"></div>     <!-- Πίνακας Δαπανών Κατά Έτος -->
 
 <!-- Πλαίσιο Εισαγωγής-Εξαγωγής -->
 <div class="data-transfer">
@@ -623,8 +633,8 @@ function renderTable(dataArray) {
 
     // Κεφαλίδες
     html += "<tr>";
-    //html += "<th>Ημερ.</th>";   
-    html += "<th style='text-align:right; position:relative;'>Ημερομ. <span class='close-x' style='position:absolute; left:6px; cursor:pointer;'>✖</span></th>";
+    html += "<th>Ημερ.</th>";   
+    //html += "<th style='text-align:right; position:relative;'>Ημερομ. <span class='close-x' style='position:absolute; left:6px; cursor:pointer;'>✖</span></th>";
 
     html += "<th style='white-space:nowrap;'>Πληρωμή <select id='paymentHeaderFilter' class='header-filter'></select></th>";    //  ........c1..........
     
