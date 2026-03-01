@@ -146,7 +146,7 @@
   /* Μορφοποίηση πίνακα */
   .data-table {      
       width: 100%;            /* Πάρε όλο το διαθέσιμο πλάτος του container σου (μόνο για κινητό)*/      
-      max-width: 470px;        /* Καθορισμός μεγίστου πλάτους */
+      /*max-width: 470px;         Καθορισμός μεγίστου πλάτους */
       border-collapse: collapse;
       /* min-width: 700px;  κρατάει σωστό πλάτος σε desktop */
   }
@@ -308,7 +308,12 @@
         <button type="button" id="nextBtn" title="Επόμενη εγγραφή">▶️</button>
         <button type="button" id="lastBtn" title="Τελευταία εγγραφή">⏭️</button>     
     </div>  
-    
+
+    <div class="form-row">
+        <label for="recordId">Α/Α</label>
+        <input type="text" id="recordId" name="recordId" readonly>
+    </div>
+        
     <div class="form-row">    <!-- Το div είναι δομικό κουτί, για ομαδοποίηση στοιχείων. -->
         <label>Ημερομηνία</label>  
         <input type="date" id="date"> <!-- Πεδίο ημερομηνίας.Το type καθορίζει τη συμπεριφορά. -->
@@ -425,6 +430,37 @@ if (savedData) {                       // Εάν υπάρχουν δεδομέν
 
 
 
+
+// ===============================
+// Μηχανισμός Αυξούσας Αρίθμησης Εγγραφών (AutoNumber)
+// ===============================
+
+function getNextIdPreview() {
+    let lastId = localStorage.getItem("miniExpensesLastId");
+    if (!lastId) return 1;
+    return parseInt(lastId) + 1;
+}
+
+
+function getNextId() {
+
+    let lastId = localStorage.getItem("miniExpensesLastId");
+
+    if (!lastId) {
+        lastId = 0;
+    } else {
+        lastId = parseInt(lastId);
+    }
+
+    const newId = lastId + 1;
+
+    localStorage.setItem("miniExpensesLastId", newId);
+
+    return newId;
+}
+
+
+
 // ================= SAVE =================
 document.getElementById("saveBtn").addEventListener("click", function () {
 
@@ -454,6 +490,7 @@ document.getElementById("saveBtn").addEventListener("click", function () {
 
     // Δημιουργούμε αντικείμενο εγγραφής
     let record = {
+        id: getNextId(),
         date: document.getElementById("date").value,
         document: document.getElementById("document").value,        
         payment: document.getElementById("payment").value,
@@ -487,7 +524,10 @@ document.getElementById("saveBtn").addEventListener("click", function () {
 // ================= NEW =================
 document.getElementById("newBtn").addEventListener("click", function () {
     currentIndex = -1;
-    document.querySelectorAll("input").forEach(i => i.value = "");  // Καθαρισμός όλων των πεδίων
+
+    document.querySelectorAll("input").forEach(i => i.value = "");
+
+    document.getElementById("recordId").value = getNextIdPreview();
 });
 
 
@@ -563,6 +603,7 @@ function displayRecord() {
     let record = records[currentIndex];   // // Παίρνουμε την τρέχουσα εγγραφή από τον πίνακα
 
     // Γεμίζουμε τα πεδία της φόρμας με τα στοιχεία της εγγραφής
+    document.getElementById("recordId").value = record.id;
     document.getElementById("date").value = record.date;
     document.getElementById("document").value = record.document;    
     document.getElementById("payment").value = record.payment;
@@ -633,6 +674,7 @@ function renderTable(dataArray) {
 
     // Κεφαλίδες
     html += "<tr>";
+    html += "<th>Α/Α</th>";
     html += "<th>Ημερ.</th>";   
     //html += "<th style='text-align:right; position:relative;'>Ημερομ. <span class='close-x' style='position:absolute; left:6px; cursor:pointer;'>✖</span></th>";
 
@@ -661,6 +703,7 @@ function renderTable(dataArray) {
 
 
         html += "<tr>";
+        html += "<td>" + record.id + "</td>";
         html += "<td>" + record.date + "</td>";
         // html += "<td>" + record.document + "</td>";        
         html += "<td>" + record.payment + "</td>";
@@ -674,7 +717,7 @@ function renderTable(dataArray) {
 
     // Γραμμή συνόλου
     html += "<tr>";
-    html += "<td colspan='4' style='text-align:right;font-weight:bold;'>Σύνολο</td>";
+    html += "<td colspan='5' style='text-align:right;font-weight:bold;'>Σύνολο</td>";
     html += "<td class='amount-cell' style='font-weight:bold;'>" + total.toFixed(2) + "</td>";
     html += "</tr>";
 
