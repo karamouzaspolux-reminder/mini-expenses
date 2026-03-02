@@ -306,7 +306,8 @@
         <button type="button" id="firstBtn" title="Πρώτη εγγραφή">⏮️</button>
         <button type="button" id="previousBtn" title="Προηγούμενη εγγραφή">◀️</button>
         <button type="button" id="nextBtn" title="Επόμενη εγγραφή">▶️</button>
-        <button type="button" id="lastBtn" title="Τελευταία εγγραφή">⏭️</button>     
+        <button type="button" id="lastBtn" title="Τελευταία εγγραφή">⏭️</button>  
+        <button type="button" id="searchBtn" title="Αναζήτηση εγγραφής">🔍</button>    
     </div>  
 
     <div class="form-row">
@@ -705,7 +706,7 @@ function renderTable(dataArray) {
             continue;
 
 
-        html += "<tr>";
+        html += `<tr data-id="${record.id}">`; // Προσθέτουμε το μοναδικό id της εγγραφής ως data-id στη γραμμή του πίνακα
         html += "<td>" + record.id + "</td>";
         html += "<td>" + record.date + "</td>";
         // html += "<td>" + record.document + "</td>";        
@@ -726,7 +727,32 @@ function renderTable(dataArray) {
 
     html += "</table></div>";                                
 
-    container.innerHTML = wrapTable(html, "tableContainer", "toggleTableBtn");
+    container.innerHTML = wrapTable(html, "tableContainer", "toggleTableBtn"); // Δημιουργία του πίνακα
+
+    // Προσθέτουμε click event στον πίνακα (μετά το render)
+    let table = container.querySelector("table");
+
+    if (table) {
+        table.addEventListener("click", function (e) {
+
+            let row = e.target.closest("tr");
+            if (!row) return;
+
+            let id = row.dataset.id;
+            if (!id) return;   // αγνοεί header & σύνολο
+
+            let index = records.findIndex(r => r.id == id);
+            if (index === -1) return;
+
+            currentIndex = index;
+            displayRecord();
+
+            // Επαναεμφάνιση φόρμας (γιατί την κρύβουμε όταν ανοίγει ο πίνακας)            
+            document.getElementById("tableContainer").style.display = "none";  
+            document.getElementById("entryForm").style.display = "block";         
+
+        });
+    }
 
     // Ενεργοποίηση του Χ μετά το render
     let closeBtn = container.querySelector(".close-x");
@@ -821,11 +847,12 @@ function renderTable(dataArray) {
 // ΑΡΧΙΚΑ ΚΡΥΒΟΥΜΕ ΤΟΝ ΠΙΝΑΚΑ
 document.getElementById('tableContainer').style.display='none';
 document.getElementById('toggleTableBtn').disabled=false;
+document.getElementById("entryForm").style.display = "block";
 
 
 // ΚΟΥΜΠΙ ΕΜΦΑΝΙΣΗΣ ΒΑΣΙΚΟΥ ΠΙΝΑΚΑ
 document.getElementById("toggleTableBtn").addEventListener("click", function () {
-
+    
     // Δημιουργούμε τον πίνακα
     renderTable(records);
 
@@ -840,7 +867,19 @@ document.getElementById("toggleTableBtn").addEventListener("click", function () 
 });
 
 
+// ===== ΚΟΥΜΠΙ ΑΝΑΖΗΤΗΣΗΣ ΑΠΟ ΦΟΡΜΑ =====
+document.getElementById("searchBtn").addEventListener("click", function () {
 
+    // Δημιουργούμε τον πίνακα
+    renderTable(records);
+
+    // Τον εμφανίζουμε
+    document.getElementById("tableContainer").style.display = "block";
+
+    // Αποκρύπτουμε τη φόρμα ώστε ο πίνακας να καταλαμβάνει όλο τον διαθέσιμο χώρο 
+    document.getElementById("entryForm").style.display = "none";
+
+});
 
 
 
