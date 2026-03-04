@@ -107,6 +107,7 @@
     justify-content: flex-start;  /* κεντράρισμα των κουμπιών οριζόντια, align-items = κάθετη στοίχιση */
                       /* justify-content: flex-start (αριστερά), justify-content: flex-end (δεξιά) */
                       /* justify-content: center (κέντρο) */
+    font-size: 5px;
   }
 
   
@@ -128,7 +129,7 @@
       border-radius: 4px;        /* Στρογγύλεμα των γωνιών των κουμπιών, όσο > αριθμός => > στρογγύλεμα.*/
       cursor: pointer;           /* Δείχνει ότι είναι clickable */
       padding: 4px 8px;
-      font-size: 13px;
+      font-size: 15px;
   }
 
 
@@ -751,7 +752,7 @@ function renderTable(dataArray) {
             // Επαναεμφάνιση φόρμας (γιατί την κρύβουμε όταν ανοίγει ο πίνακας)            
             document.getElementById("tableContainer").style.display = "none";  
             document.getElementById("entryForm").style.display = "block";         
-
+            toggleTableBtn.disabled = false;
         });
     }
 
@@ -885,6 +886,9 @@ document.getElementById("searchBtn").addEventListener("click", function () {
 
 
 // ================= SUMMARY BY CATEGORY =================
+
+ 
+    
 let categoryVisible = false;
 
 document.getElementById("categoryBtn").addEventListener("click", function () {
@@ -960,6 +964,9 @@ document.getElementById("categoryBtn").addEventListener("click", function () {
     categoryBtn.visible = false;
     // Απενεργοποιούμε το κουμπί
     this.disabled = true;
+
+    // Αποκρύπτουμε τη φόρμα ώστε ο πίνακας να καταλαμβάνει όλο τον διαθέσιμο χώρο 
+    document.getElementById("entryForm").style.display = "none"; 
 });
  
 
@@ -1042,6 +1049,8 @@ document.getElementById("paymentBtn").addEventListener("click", function () {
     // Απενεργοποιούμε το κουμπί
     this.disabled = true;
 
+    // Αποκρύπτουμε τη φόρμα ώστε ο πίνακας να καταλαμβάνει όλο τον διαθέσιμο χώρο 
+    document.getElementById("entryForm").style.display = "none"; 
 });
  
 
@@ -1123,6 +1132,9 @@ document.getElementById("supplierBtn").addEventListener("click", function () {
     supplierVisible = true;
     // Απενεργοποιούμε το κουμπί
     this.disabled = true;
+
+    // Αποκρύπτουμε τη φόρμα ώστε ο πίνακας να καταλαμβάνει όλο τον διαθέσιμο χώρο 
+    document.getElementById("entryForm").style.display = "none"; 
 });
  
 
@@ -1237,6 +1249,9 @@ document.getElementById("monthBtn").addEventListener("click", function () {
     summaryMonthVisible = true;
     // Απενεργοποιούμε το κουμπί
     this.disabled = true;
+
+    // Αποκρύπτουμε τη φόρμα ώστε ο πίνακας να καταλαμβάνει όλο τον διαθέσιμο χώρο 
+    document.getElementById("entryForm").style.display = "none"; 
 });
 
 
@@ -1333,6 +1348,9 @@ document.getElementById("yearBtn").addEventListener("click", function () {
     summaryYearVisible = true;
     // Απενεργοποιούμε το κουμπί
     this.disabled = true;
+
+    // Αποκρύπτουμε τη φόρμα ώστε ο πίνακας να καταλαμβάνει όλο τον διαθέσιμο χώρο 
+    document.getElementById("entryForm").style.display = "none"; 
 });
 
 
