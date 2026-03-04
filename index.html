@@ -275,6 +275,16 @@
     padding-top: 21px;
 }
 
+
+#helpOverlay{
+    display:none;
+    padding:20px;    
+}
+
+#helpOverlay h3{
+    margin:0;
+}
+
 </style>
 
 </head>
@@ -309,7 +319,9 @@
         <button type="button" id="previousBtn" title="Προηγούμενη εγγραφή">◀️</button>
         <button type="button" id="nextBtn" title="Επόμενη εγγραφή">▶️</button>
         <button type="button" id="lastBtn" title="Τελευταία εγγραφή">⏭️</button>  
-        <button type="button" id="searchBtn" title="Αναζήτηση εγγραφής">🔍</button>    
+        <button type="button" id="searchBtn" title="Αναζήτηση εγγραφής">🔍</button>         
+        <button type="button" id="helpBtn" class="helpBtn" title="Οδηγίες">?</button>          
+
     </div>  
 
     <div class="form-row">
@@ -403,6 +415,40 @@
   <button onclick="importData()">Εισαγωγή</button>
   <input type="file" id="importFile" accept=".json" hidden>
 </div>
+
+
+<!-- ΠΛΑΙΣΙΟ ΟΔΗΓΙΩΝ -->
+<div id="helpOverlay">
+
+    <div id="helpBox">
+
+        <h3>Οδηγίες χρήσης</h3>
+
+        <p><b>Πατήστε:</b><br>
+        <b>💾</b> για Αποθήκευση εγγραφής<br>
+        <b>➕</b> για Νέα εγγραφή<br>
+        <b>🗑️ </b> για Διαγραφή εγγραφής<br>
+        <b>⏮️</b> για Μετάβαση στη  πρώτη εγγραφή<br>
+        <b>◀️</b> για Μετάβαση στη  προηγούμενη εγγραφή<br>
+        <b>▶️</b> για Μετάβαση στη  επόμενη εγγραφή<br>
+        <b>⏭️</b> για Μετάβαση στη  τελευταία εγγραφή<br>
+        <b>🔍</b> για Αναζήτηση εγγραφής<br><br>
+        <p><b>Τα παρακάτω πεδία έχουν έτοιμες τιμές:</b><br>
+        Παραστατικό<br>    
+        Πληρωμή<br>        
+        Κατηγορία<br>
+           Στην Κατηγορία μπορείτε να βάλετε και άλλες τιμές!<br>
+        Στον Πίνακα των εγγραφών, πατώντας σε μια εγγραφή,<br>
+        εμφανίζεται η φόρμα Καταχώρησης στην εγγραφή αυτή!<br>       
+        </p>
+
+        <button id="closeHelpBtn">Κλείσιμο</button>       
+
+    </div>
+
+</div>
+
+
 
 
 
@@ -1408,9 +1454,23 @@ function importData() {
 }
 
 
+// ΕΜΦΑΝΙΣΗ ΟΔΗΓΙΩΝ
+document.getElementById("helpBtn").addEventListener("click", function() {
+    document.getElementById("helpOverlay").style.display = "block";
+});
+
+ // ΚΛΕΙΣΙΜΟ ΟΔΗΓΙΩΝ
+document.getElementById("closeHelpBtn").addEventListener("click", function() {
+    document.getElementById("helpOverlay").style.display = "none";
+});
+
 
 </script>
 
 
+
+
 </body>
+
 </html>
+
