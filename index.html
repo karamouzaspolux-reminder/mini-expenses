@@ -541,7 +541,7 @@ document.getElementById("saveBtn").addEventListener("click", function () {
 
     // Δημιουργούμε αντικείμενο εγγραφής
     let record = {
-        id: getNextId(),
+        id: (currentIndex === -1) ? getNextId() : records[currentIndex].id,
         date: document.getElementById("date").value,
         document: document.getElementById("document").value,        
         payment: document.getElementById("payment").value,
