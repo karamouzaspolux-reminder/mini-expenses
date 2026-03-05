@@ -900,21 +900,24 @@ document.getElementById('tableContainer').style.display='none';
 document.getElementById('toggleTableBtn').disabled=false;
 document.getElementById("entryForm").style.display = "block";
 
+    
 
 // ΚΟΥΜΠΙ ΕΜΦΑΝΙΣΗΣ ΒΑΣΙΚΟΥ ΠΙΝΑΚΑ
-document.getElementById("toggleTableBtn").addEventListener("click", function () {
-    
-    // Δημιουργούμε τον πίνακα
-    renderTable(records);
+document.getElementById("toggleTableBtn").addEventListener("click", function () {  //Όταν πατάμε το κουμπί
 
-    // Τον εμφανίζουμε
-    document.getElementById("tableContainer").style.display = "block";
-    
-    // Αποκρύπτουμε τη φόρμα ώστε ο πίνακας να καταλαμβάνει όλο τον διαθέσιμο χώρο 
-    document.getElementById("entryForm").style.display = "none";  
+    let container = document.getElementById("tableContainer");  // Παίρνουμε το Container του πίνακα
 
-    // Απενεργοποιούμε το κουμπί για να μην δημιουργηθεί διπλό render πίνακα
-    this.disabled = true;
+    if (container.style.display === "block") {      // Εάν ο πίνακας είναι εμφανής
+        container.style.display = "none";           // Κρύβουμε τον πίνακα
+        document.getElementById("entryForm").style.display = "block"; // εμφανίζουμε τη φόρμα
+        return;   // Σταματάμε γιατί ο πίνακας έκλεισε
+    }
+
+    renderTable(records);   // Δημιουργούμε τον πίνακα
+
+    container.style.display = "block";    // Εμφανίζουμε τον πίνακα
+    document.getElementById("entryForm").style.display = "none"; // Κρύψιμο φόρμας για να δώσουμε χώρο στον πίνακα
+
 });
 
 
@@ -1012,7 +1015,7 @@ document.getElementById("categoryBtn").addEventListener("click", function () {
     categoryVisible = true;
     categoryBtn.visible = false;
     // Απενεργοποιούμε το κουμπί
-    this.disabled = true;
+    // this.disabled = true;
 
     // Αποκρύπτουμε τη φόρμα ώστε ο πίνακας να καταλαμβάνει όλο τον διαθέσιμο χώρο 
     document.getElementById("entryForm").style.display = "none"; 
@@ -1096,7 +1099,7 @@ document.getElementById("paymentBtn").addEventListener("click", function () {
     //this.textContent = "Πληρωμές΄Χ΄";
     paymentVisible = true;
     // Απενεργοποιούμε το κουμπί
-    this.disabled = true;
+    // this.disabled = true;
 
     // Αποκρύπτουμε τη φόρμα ώστε ο πίνακας να καταλαμβάνει όλο τον διαθέσιμο χώρο 
     document.getElementById("entryForm").style.display = "none"; 
@@ -1180,7 +1183,7 @@ document.getElementById("supplierBtn").addEventListener("click", function () {
     //this.textContent = "Προμηθευτές΄Χ΄";
     supplierVisible = true;
     // Απενεργοποιούμε το κουμπί
-    this.disabled = true;
+    // this.disabled = true;
 
     // Αποκρύπτουμε τη φόρμα ώστε ο πίνακας να καταλαμβάνει όλο τον διαθέσιμο χώρο 
     document.getElementById("entryForm").style.display = "none"; 
@@ -1434,7 +1437,7 @@ document.getElementById("yearBtn").addEventListener("click", function () {
     //this.textContent = "Έτη΄Χ΄";
     summaryYearVisible = true;
     // Απενεργοποιούμε το κουμπί
-    this.disabled = true;
+    // this.disabled = true;
 
     // Αποκρύπτουμε τη φόρμα ώστε ο πίνακας να καταλαμβάνει όλο τον διαθέσιμο χώρο 
     document.getElementById("entryForm").style.display = "none"; 
