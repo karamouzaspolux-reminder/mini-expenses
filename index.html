@@ -411,10 +411,11 @@
 <div id="summaryMonthContainer" style="margin-top:15px;"></div>    <!-- Πίνακας Δαπανών Κατά Μήνα -->
 <div id="summaryYearContainer" style="margin-top:15px;"></div>     <!-- Πίνακας Δαπανών Κατά Έτος -->
 
-<!-- Πλαίσιο Εισαγωγής-Εξαγωγής -->
+<!-- Πλαίσιο Εισαγωγής-Εξαγωγής-Διαγραφής Όλων των Εγγραφών -->
 <div class="data-transfer">
   <button onclick="exportData()">Εξαγωγή</button>
   <button onclick="importData()">Εισαγωγή</button>
+  <button onclick="clearAllData()">Καθαρισμός</button>
   <input type="file" id="importFile" accept=".json" hidden>
 </div>
 
@@ -456,7 +457,7 @@
 
 <script>
 
- // localStorage.clear();   // Πλήρης καθαρισμός localStorage για αυτό το αρχείο    
+// localStorage.clear();    Πλήρης καθαρισμός localStorage για αυτό το αρχείο    
     
 let records = [];  // Πίνακας που θα κρατά τις εγγραφές (σαν πίνακας Access)
 let currentIndex = -1;  // // Δείκτης θέσης της τρέχουσας εγγραφής (καμία εγγραφή επιλεγμένη στην αρχή)
@@ -1209,6 +1210,7 @@ const greekMonths = [
 
 // ================= SUMMARY BY MONTH =================
 let summaryMonthVisible = false;
+let selectedMonthCategory = "all";
 
 document.getElementById("monthBtn").addEventListener("click", function () {
 
@@ -1218,6 +1220,7 @@ document.getElementById("monthBtn").addEventListener("click", function () {
         container.style.display = "none";
         this.textContent = "Μήνες";
         summaryMonthVisible = false;
+        selectedMonthCategory = "all";
         return;
     }
 
@@ -1232,6 +1235,8 @@ document.getElementById("monthBtn").addEventListener("click", function () {
     for (let record of records) {
 
         if (!record.date) continue;
+        if (selectedMonthCategory !== "all" && record.category !== selectedMonthCategory) continue;
+        let amount = Number(record.amount) || 0;
 
         let date = new Date(record.date);
         let month = date.getMonth();       // 0-11
@@ -1239,9 +1244,7 @@ document.getElementById("monthBtn").addEventListener("click", function () {
 
         let key = year + "-" + month;      // τεχνικό κλειδί για ταξινόμηση
         let label = greekMonths[month] + " " + year;
-
-        let amount = Number(record.amount) || 0;
-
+        
         if (!totalsByMonth[key]) {
             totalsByMonth[key] = {
                 label: label,
@@ -1253,7 +1256,20 @@ document.getElementById("monthBtn").addEventListener("click", function () {
         grandTotal += amount;
     }
 
-    let html = "<div class='table-wrapper'><table class='data-table'>";
+    //let html = "<div class='table-wrapper'><table class='data-table'>";   // Δημιουργία μόνο πίνακα
+
+    // Δημιουργία πρώτα του φίλτρου και μετά του πίνακα
+    let html = `
+    <div style="display:flex; align-items:center; gap:12px; margin-left:40px; margin-top:-8px; margin-bottom:6px; font-size:14px;">
+    <label>Κατηγορία:</label>
+    <select id="monthCategoryFilter" style="font-size:14px;">
+    <option value="all">Όλες</option>
+    </select>
+    </div>
+             
+    <div class='table-wrapper'><table class='data-table'>
+    `;
+
     html += "<tr><th>Μήνας</th><th>Ποσό</th><th>%</th><th>Γράφημα</th></tr>";
 
     // Μετατρέπουμε σε array
@@ -1292,11 +1308,34 @@ document.getElementById("monthBtn").addEventListener("click", function () {
 
     container.innerHTML = wrapTable(html, "summaryMonthContainer", "monthBtn");
 
+    // ===== Γέμισμα dropdown κατηγορίας =====
+    let select = document.getElementById("monthCategoryFilter");
+
+    select.value = selectedMonthCategory;
+
+    select.onchange = function () {
+        selectedMonthCategory = this.value;
+        summaryMonthVisible = false;
+        document.getElementById("monthBtn").dispatchEvent(new Event("click"));
+    };
+
+    let categories = [...new Set(records.map(r => r.category))];
+    categories.sort();
+
+    for (let cat of categories) {
+        let option = document.createElement("option");
+        option.value = cat;
+        option.textContent = cat;
+        select.appendChild(option);
+    }
+
+    select.value = selectedMonthCategory;
+    
     container.style.display = "block";
     //this.textContent = "Μήνες΄Χ΄";
     summaryMonthVisible = true;
     // Απενεργοποιούμε το κουμπί
-    this.disabled = true;
+    // this.disabled = true;
 
     // Αποκρύπτουμε τη φόρμα ώστε ο πίνακας να καταλαμβάνει όλο τον διαθέσιμο χώρο 
     document.getElementById("entryForm").style.display = "none"; 
@@ -1453,6 +1492,32 @@ function importData() {
 
         reader.readAsText(file);
     };
+}
+
+
+
+// ΔΙΑΓΡΑΦΗ ΟΛΩΝ ΤΩΝ ΕΓΓΡΑΦΩΝ ΚΑΙ ΜΗΔΕΝΙΣΜΟΥ ΔΕΙΚΤΗ ΕΓΓΡΑΦΩΝ
+function clearAllData(){
+
+    if(!confirm("Θέλετε να διαγραφούν ΟΛΕΣ οι εγγραφές;"))
+        return;
+
+    if(!confirm("Η ενέργεια δεν μπορεί να αναιρεθεί. Συνέχεια;"))
+        return;
+
+    localStorage.removeItem("miniExpensesRecords");
+    localStorage.removeItem("miniExpensesLastId");
+
+    records = [];
+    currentIndex = -1;
+
+    document.querySelectorAll("input").forEach(i => i.value = "");
+
+    document.getElementById("resultsInfo").innerText = "";
+
+    alert("Όλα τα δεδομένα διαγράφηκαν.");
+
+    location.reload();
 }
 
 
