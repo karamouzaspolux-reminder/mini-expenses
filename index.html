@@ -287,6 +287,10 @@
     margin:0;
 }
 
+#closeHelpBtn:hover{
+    color:black;
+}
+
 </style>
 
 </head>
@@ -413,7 +417,7 @@
 
 <!-- Πλαίσιο Εισαγωγής-Εξαγωγής-Διαγραφής Όλων των Εγγραφών -->
 <div class="data-transfer">
-  <button onclick="exportData()">Εξαγωγή</button>
+  <button onclick="exportData()">Backup</button>
   <button onclick="importData()">Εισαγωγή</button>
   <button onclick="clearAllData()">Καθαρισμός</button>
   <input type="file" id="importFile" accept=".json" hidden>
@@ -425,9 +429,14 @@
 
     <div id="helpBox">
 
-        <h3>Οδηγίες χρήσης</h3>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <h3 style="margin:0;">Οδηγίες χρήσης</h3>
 
-        <p><b>Πατήστε για:</b><br>
+            <span id="closeHelpBtn"
+            style="cursor:pointer; font-size:22px; color:#666;">✖</span>
+        </div>
+        
+        <p><b>Κουμπιά πλοήγησης:</b><br>
         <b>💾</b> Αποθήκευση εγγραφής<br>
         <b>➕</b> Νέα εγγραφή<br>
         <b>🗑️ </b> Διαγραφή εγγραφής<br>
@@ -436,16 +445,18 @@
         <b>▶️</b> Μετάβαση στη  επόμενη εγγραφή<br>
         <b>⏭️</b> Μετάβαση στη  τελευταία εγγραφή<br>
         <b>🔍</b> Αναζήτηση εγγραφής<br><br>
-        <p><b>Τα παρακάτω πεδία έχουν έτοιμες τιμές:</b><br>
+        <b>Ορισμένα πεδία έχουν προτεινόμενες τιμές:</b><br>
         * Παραστατικό<br>    
         * Πληρωμή<br>        
         * Κατηγορία<br>
-          Στην Κατηγορία μπορείτε να βάλετε και άλλες τιμές!<br><br>
-          Στον Πίνακα των εγγραφών, πατώντας σε μια εγγραφή,<br>
-        εμφανίζεται η φόρμα Καταχώρησης στην εγγραφή αυτή!<br>       
-        </p>
-
-        <button id="closeHelpBtn">Κλείσιμο</button>       
+          Στην Κατηγορία μπορείτε να πληκτρολογήσετε και δικές σας τιμές!<br><br>
+          Στον <b>πίνακα</b> εγγραφών, αν κάνετε κλικ σε μια γραμμή,<br>
+        η φόρμα εμφανίζει την συγκεκριμένη εγγραφή!<br><br> 
+        - Το κουμπί <b>"Backup"</b> αποθηκεύει αντίγραφο <br>
+          &nbsp;&nbsp;των δεδομένων στα "Στοιχεία Λήψης".<br>
+        - Το κουμπί <b>"Εισαγωγή"</b> εισάγει δεδομένα από αρχείο backup.<br>
+        - Το κουμπί <b>"Καθαρισμός"</b> διαγράφει όλες τις εγγραφές.<br>    
+        </p>        
 
     </div>
 
@@ -1212,19 +1223,19 @@ const greekMonths = [
 
 
 // ================= SUMMARY BY MONTH =================
-let summaryMonthVisible = false;
-let selectedMonthCategory = "all";
+let summaryMonthVisible = false;    // Μεταβλητή, δηλούσα ότι ο πίνακας δεν είναι ακόμη ορατός
+let selectedMonthCategory = "all";  // Μεταβλητή, για την επιλεγόμενη κατηγορία (Όλες)
 
 document.getElementById("monthBtn").addEventListener("click", function () {
 
-    let container = document.getElementById("summaryMonthContainer");
+    let container = document.getElementById("summaryMonthContainer"); // Μεταβλητή για τον πίνακα
 
-    if (summaryMonthVisible) {
-        container.style.display = "none";
-        this.textContent = "Μήνες";
-        summaryMonthVisible = false;
-        selectedMonthCategory = "all";
-        return;
+    if (summaryMonthVisible) {             // Αν ο πίνακας σύνοψης των μηνών είναι ήδη ορατός
+        container.style.display = "none";  // Απόκρυψη του container που περιέχει τον πίνακα
+        this.textContent = "Μήνες";        // Επαναφορά του κειμένου του κουμπιού
+        summaryMonthVisible = false;       // Ο πίνακας ακόμη δεν είναι ορατός
+        selectedMonthCategory = "all";     // Εμφάνιση όλων των κατηγοριών
+        return;                            // Τερματισμός της συνάρτησης εδώ.
     }
 
     if (records.length === 0) {
@@ -1235,47 +1246,62 @@ document.getElementById("monthBtn").addEventListener("click", function () {
     let totalsByMonth = {};
     let grandTotal = 0;
 
-    for (let record of records) {
+    for (let record of records) {      // Για κάθε εγγραφή
 
-        if (!record.date) continue;
-        if (selectedMonthCategory !== "all" && record.category !== selectedMonthCategory) continue;
-        let amount = Number(record.amount) || 0;
-
-        let date = new Date(record.date);
-        let month = date.getMonth();       // 0-11
-        let year = date.getFullYear();
-
-        let key = year + "-" + month;      // τεχνικό κλειδί για ταξινόμηση
-        let label = greekMonths[month] + " " + year;
+        if (!record.date) continue;    // Αν η εγγραφή δεν έχει ημερομηνία, την παραλείπουμε
         
-        if (!totalsByMonth[key]) {
+        // Αν έχει επιλεγεί συγκεκριμένη κατηγορία και η εγγραφή δεν ανήκει σ' αυτήν, την παραλείπουμε
+        if (selectedMonthCategory !== "all" && record.category !== selectedMonthCategory) continue;
+        let amount = Number(record.amount) || 0;  // Μετατροπή του ποσού σε αριθμό
+                                                  // Αν το ποσό είναι άδειο ή μη έγκυρο, θεωρείται 0
+        let date = new Date(record.date);  // Δημιουργεί ένα αντικείμενο ημερομηνίας από το record.date
+        let month = date.getMonth();       // Παίρνει τον μήνα από την ημερομηνία 
+        let year = date.getFullYear();     // Παίρνει το έτος από την ημερομηνία
+        // Αν θέλαμε και την ημέρα, θα γράφαμε: let day = date.getDate();
+        
+        let key = year + "-" + month;      // τεχνικό κλειδί για σωστή χρονολογική ταξινόμηση
+        let label = greekMonths[month] + " " + year; // key: 2024-0   =>  label: Ιανουάριος 2024
+        
+        if (!totalsByMonth[key]) {   // Δημιουργία εγγραφής για τον μήνα την πρώτη φορά που εμφανίζεται
             totalsByMonth[key] = {
                 label: label,
                 total: 0
             };
         }
 
-        totalsByMonth[key].total += amount;
-        grandTotal += amount;
+        totalsByMonth[key].total += amount;  // Πρόσθεση του ποσού στο σύνολο του συγκεκριμένου μήνα
+        grandTotal += amount;                // Πρόσθεση του ποσού στο γενικό σύνολο όλων των μηνών.
     }
+
+    // Αν το σύνολο είναι 0, δεν συνεχίζουμε (δεν έχει νόημα να υπολογιστούν ποσοστά)
+    if (grandTotal === 0) {
+        container.innerHTML = "<p>Δεν υπάρχουν ποσά για εμφάνιση.</p>";
+        return;
+    }
+
 
     //let html = "<div class='table-wrapper'><table class='data-table'>";   // Δημιουργία μόνο πίνακα
 
+
+    // ===== HTML: Φίλτρο κατηγορίας + πίνακας μηνών =====
     // Δημιουργία πρώτα του φίλτρου και μετά του πίνακα
-    let html = `
-    <div style="display:flex; align-items:center; gap:12px; margin-left:40px; margin-top:-8px; margin-bottom:6px; font-size:14px;">
-    <label>Κατηγορία:</label>
-    <select id="monthCategoryFilter" style="font-size:14px;">
-    <option value="all">Όλες</option>
+    
+    let html = `                                <!-- ξεκινάς να χτίζεις το HTML -->    
+    <div style="display:flex; align-items:center; gap:12px; margin-left:40px; margin-top:-8px; margin-bottom:6px; font-size:14px;">    <!-- δημιουργείς ένα container για το φίλτρο -->
+    <label>Κατηγορία:</label>                   <!-- το κείμενο που βλέπει ο χρήστης -->
+    <select id="monthCategoryFilter" style="font-size:14px;">  <!-- δημιουργεί το dropdown φίλτρου -->
+        <option value="all">Όλες</option>       <!-- η αρχική επιλογή του φίλτρου -->
     </select>
     </div>
              
-    <div class='table-wrapper'><table class='data-table'>
+    <div class='table-wrapper'><table class='data-table'>  <!-- Ξεκινάει ο πίνακας -->
     `;
 
-    html += "<tr><th>Μήνας</th><th>Ποσό</th><th>%</th><th>Γράφημα</th></tr>";
+    // ===== τέλος αρχικού HTML (φίλτρο + αρχή πίνακα) =====
+    // Δημιουργία επικεφαλίδων
+    html += "<tr><th>Μήνας</th><th>Ποσό</th><th>%</th><th>Γράφημα</th></tr>"; 
 
-    // Μετατρέπουμε σε array
+    // Μετατρέπουμε το αντικείμενο totalsByMonth σε πίνακα, για να μπορεί να γίνει sort & for 
     let sortedMonths = Object.entries(totalsByMonth);
 
     // Χρονολογική ταξινόμηση
@@ -1283,60 +1309,65 @@ document.getElementById("monthBtn").addEventListener("click", function () {
         return new Date(a[0]) - new Date(b[0]);
     });
 
-    for (let [key, data] of sortedMonths) {
+    for (let [key, data] of sortedMonths) {     // περνάει έναν-έναν τους μήνες που προέκυψαν από την ταξινόμηση
 
-        let percent = (data.total / grandTotal) * 100;
+        let percent = (data.total / grandTotal) * 100;   // Υπολογισμός ποσοστού
 
-        html += "<tr>";
-        html += "<td>" + data.label + "</td>";
-        html += "<td class='amount-cell'>" + data.total.toFixed(2) + "</td>";
-        html += "<td>" + percent.toFixed(2) + "%</td>";
+        html += "<tr>";                          // Δημιουργία γραμμής πίνακα
+        html += "<td>" + data.label + "</td>";   // Εμφάνιση μήνα, π.χ. Ιανουάριος 2026
+        html += "<td class='amount-cell'>" + data.total.toFixed(2) + "</td>"; // Εμφάνιση ποσού (,00)
+        html += "<td>" + percent.toFixed(2) + "%</td>";         // Εμφάνιση ποσοστού (,00)
 
-        html += "<td>";
-        html += "<div class='bar'>";
+        html += "<td>";     // αρχή κελιού για το γράφημα (μπάρα ποσοστού)
+        html += "<div class='bar'>";  // Μέσα σ'αυτό το κελί μπαίνει η μπάρα γραφήματος
         html += "<div class='bar-fill' style='width:" + percent.toFixed(2) + "%'></div>";
         html += "</div>";
         html += "</td>";
         html += "</tr>";
     }
 
-    html += "<tr>";
-    html += "<td style='font-weight:bold;'>Σύνολο</td>";
+    html += "<tr>";     // Ξεκινά νέα γραμμή πίνακα, όπου θα μπει το σύνολο
+    html += "<td style='font-weight:bold;'>Σύνολο</td>";  // Κελί με τη λέξη σύνολο με έντονα γράμματα
+    // Κελί με το συνολικό ποσό όλων των μηνών:
     html += "<td class='amount-cell' style='font-weight:bold;'>" + grandTotal.toFixed(2) + "</td>";
-    html += "<td style='font-weight:bold;'>100.00%</td>";
-    html += "<td></td>";
-    html += "</tr>";
+    html += "<td style='font-weight:bold;'>100.00%</td>";  // Το συνολικό ποσοστό είναι πάντα 100,00%
+    html += "<td></td>";  // Αφήνουμε ένα κενό κελί
+    html += "</tr>";      // Κλείσιμο γραμμής "Σύνολο"
 
-    html += "</table></div>";
+    html += "</table></div>";  // κλείνει τον πίνακα και το container
 
+    // // Εμφάνιση του πίνακα στο container
     container.innerHTML = wrapTable(html, "summaryMonthContainer", "monthBtn");
 
     // ===== Γέμισμα dropdown κατηγορίας =====
-    let select = document.getElementById("monthCategoryFilter");
+    let select = document.getElementById("monthCategoryFilter"); // Παίρνουμε το dropdown που κάναμε
 
-    select.value = selectedMonthCategory;
+    select.value = selectedMonthCategory;   // Διατήρηση της επιλεγμένης κατηγορίας
 
-    select.onchange = function () {
-        selectedMonthCategory = this.value;
-        summaryMonthVisible = false;
+    select.onchange = function () {    // Όταν αλλάξει η κατηγορία στο dropdown
+        selectedMonthCategory = this.value;  // Αποθήκευση επιλογής χρήστη
+        summaryMonthVisible = false;         // Κλείνουμε τον πίνακα προσωρινά
+        // Ξαναεκτέλεση του κουμπιού για ανανέωση πίνακα :
         document.getElementById("monthBtn").dispatchEvent(new Event("click"));
     };
 
-    let categories = [...new Set(records.map(r => r.category))];
-    categories.sort();
+    // Δημιουργία λίστας μοναδικών κατηγοριών :
+    let categories = [...new Set(records.map(r => r.category))]; 
+    categories.sort();    // βάζει τις κατηγορίες σε σειρά
 
-    for (let cat of categories) {
+    for (let cat of categories) {     // για κάθε κατηγορία δημιουργείται μία επιλογή στο dropdown
+        // προσθέτει την κατηγορία στη λίστα επιλογών με τις επόμενες 4 γραμμές
         let option = document.createElement("option");
         option.value = cat;
         option.textContent = cat;
         select.appendChild(option);
     }
 
-    select.value = selectedMonthCategory;
+    select.value = selectedMonthCategory;  // ξαναβάζει την ήδη επιλεγμένη κατηγορία
     
-    container.style.display = "block";
+    container.style.display = "block";    // εμφανίζει το container
     //this.textContent = "Μήνες΄Χ΄";
-    summaryMonthVisible = true;
+    summaryMonthVisible = true;           // Δήλωση ότι ο πίνακας είναι ορατός
     // Απενεργοποιούμε το κουμπί
     // this.disabled = true;
 
@@ -1486,6 +1517,15 @@ function importData() {
                     return;
 
                 localStorage.setItem("miniExpensesRecords", JSON.stringify(importedData));
+
+                // ===== Εύρεση μεγαλύτερου ID από το αρχείο =====
+                let maxId = 0;
+                for (let r of importedData) {
+                    if (r.id > maxId) maxId = r.id;
+                }
+
+                localStorage.setItem("miniExpensesLastId", maxId);
+
                 alert("Η εισαγωγή ολοκληρώθηκε.");
                 location.reload();
             } catch (error) {
