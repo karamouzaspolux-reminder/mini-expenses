@@ -1359,26 +1359,35 @@ document.getElementById("monthBtn").addEventListener("click", function () {
 
     // ===== HTML: Φίλτρο κατηγορίας + πίνακας μηνών =====
     // Δημιουργία πρώτα του φίλτρου και μετά του πίνακα    
+
+    let html = `           <!-- ξεκινάς να χτίζεις το HTML, δημιουργώντας ένα container για το φίλτρο --> 
     
-    let html = `                 <!-- ξεκινάς να χτίζεις το HTML --> 
-    <div style="display:flex; align-items:center; gap:5px; margin-left:40px; margin-top:-8px; margin-bottom:6px; font-size:14px;">        <!-- δημιουργείς ένα container για το φίλτρο --> 
+    <!-- <div style="display:flex; flex-direction:column; align-items:flex-start; gap:8px; margin-left:40px; margin-top:-8px; margin-bottom:6px; font-size:14px; max-width:220px;">     κάθετη διάταξη -->
 
-    <label>Κατηγορία:</label>                                     <!-- το κείμενο που βλέπει ο χρήστης -->
-    <select id="monthCategoryFilter" style="font-size:14px;">     <!-- δημιουργεί το dropdown φίλτρου -->
-    <option value="all">Όλες</option>                             <!-- η αρχική επιλογή του φίλτρου --> 
-    </select>
+    <!-- <div style="display:flex; align-items:center; gap:5px; margin-left:40px; margin-top:-8px; margin-bottom:6px; font-size:14px;">        οριζόντια διάταξη  --> 
 
-    <label>Πληρωμή:</label>
-    <select id="monthPaymentFilter" style="font-size:14px;">
-    <option value="all">Όλες</option>
-    </select>
+    <div style="display:flex; flex-direction:column; gap:6px; margin-left:40px; margin-top:-8px; margin-bottom:6px; font-size:14px;">
 
-    <label>Προμηθευτής:</label>
-    <select id="monthSupplierFilter" style="font-size:14px;">
-    <option value="all">Όλοι</option>
-    </select>
-
+    <div style="display:flex; align-items:center; gap:6px;">
+      <label style="display:inline-block; width:95px;">Κατηγορία:</label>   <!-- το κείμενο που βλέπει ο χρήστης -->
+      <select id="monthCategoryFilter" style="font-size:14px; width:200px;">             <!-- δημιουργεί το dropdown φίλτρου -->
+        <option value="all">Όλες</option>                                   <!-- η αρχική επιλογή του φίλτρου -->
+      </select>
     </div>
+
+    <div style="display:flex; align-items:center; gap:6px;">
+      <label style="display:inline-block; width:95px;">Πληρωμή:</label>
+      <select id="monthPaymentFilter" style="font-size:14px; width:200px;">
+        <option value="all">Όλες</option>
+      </select>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:6px;">
+      <label style="display:inline-block; width:95px;">Προμηθευτής:</label>
+      <select id="monthSupplierFilter" style="font-size:14px; width:200px;">
+        <option value="all">Όλοι</option>
+      </select>
+    </div>    
 
     <div class='table-wrapper'><table class='data-table'>   <!-- Ξεκινάει ο πίνακας -->
     `;
@@ -1504,17 +1513,22 @@ document.getElementById("monthBtn").addEventListener("click", function () {
 
 
 //==============SUMMARY BY YEAR =================
-let summaryYearVisible = false;
 
-document.getElementById("yearBtn").addEventListener("click", function () {
+let summaryYearVisible = false;    // Μεταβλητή, δηλούσα ότι ο πίνακας δεν είναι ακόμη ορατός
+let selectedYearCategory = "all";  // Μεταβλητή, για την επιλεγόμενη κατηγορία (Όλες)
+let selectedYearPayment = "all";      // επιλεγμένος τρόπος πληρωμής
+let selectedYearSupplier = "all";     // επιλεγμένος προμηθευτής
 
-    let container = document.getElementById("summaryYearContainer", "yearBtn");
+document.getElementById("yearBtn").addEventListener("click", function () {    
 
-    if (summaryYearVisible) {
-        container.style.display = "none";
-        this.textContent = "Έτη";
-        summaryYearVisible = false;
-        return;
+    let container = document.getElementById("summaryYearContainer"); // Μεταβλητή για τον πίνακα
+
+    if (summaryYearVisible) {             // Αν ο πίνακας σύνοψης των μηνών είναι ήδη ορατός
+        container.style.display = "none";  // Απόκρυψη του container που περιέχει τον πίνακα
+        this.textContent = "Μήνες";        // Επαναφορά του κειμένου του κουμπιού
+        summaryYearVisible = false;       // Ο πίνακας ακόμη δεν είναι ορατός
+       // selectedMonthCategory = "all";     // Εμφάνιση όλων των κατηγοριών
+        return;                            // Τερματισμός της συνάρτησης εδώ.
     }
 
     if (records.length === 0) {
@@ -1525,34 +1539,103 @@ document.getElementById("yearBtn").addEventListener("click", function () {
     let totalsByYear = {};
     let grandTotal = 0;
 
-    for (let record of records) {
+    for (let record of records) {      // Για κάθε εγγραφή
 
-        if (!record.date) continue;
+        if (!record.date) continue;    // Αν η εγγραφή δεν έχει ημερομηνία, την παραλείπουμε
+        
+        // Αν έχει επιλεγεί συγκεκριμένη κατηγορία και η εγγραφή δεν ανήκει σ' αυτήν, την παραλείπουμε
+        if (selectedYearCategory !== "all" && record.category !== selectedYearCategory) continue;
+        if (selectedYearPayment !== "all" && record.payment !== selectedYearPayment) continue;
+        if (selectedYearSupplier !== "all" && record.supplier !== selectedYearSupplier) continue;
 
-        let date = new Date(record.date);
-        // let month = date.getMonth();       // 0-11
-        let year = date.getFullYear();
 
-        let key = year + "-" + year;      // τεχνικό κλειδί για ταξινόμηση
-        let label =  year;
 
-        let amount = Number(record.amount) || 0;
-
-        if (!totalsByYear[key]) {
+        let amount = Number(record.amount) || 0;  // Μετατροπή του ποσού σε αριθμό
+                                                  // Αν το ποσό είναι άδειο ή μη έγκυρο, θεωρείται 0
+        let date = new Date(record.date);  // Δημιουργεί ένα αντικείμενο ημερομηνίας από το record.date
+        // let month = date.getMonth();       // Παίρνει τον μήνα από την ημερομηνία 
+        let year = date.getFullYear();     // Παίρνει το έτος από την ημερομηνία
+        // Αν θέλαμε και την ημέρα, θα γράφαμε: let day = date.getDate();
+        
+        let key = year;      // τεχνικό κλειδί για σωστή χρονολογική ταξινόμηση
+        let label = year; // key:  =>  label:  2024
+        
+        if (!totalsByYear[key]) {   // Δημιουργία εγγραφής για τον μήνα την πρώτη φορά που εμφανίζεται
             totalsByYear[key] = {
                 label: label,
                 total: 0
             };
         }
 
-        totalsByYear[key].total += amount;
-        grandTotal += amount;
+        totalsByYear[key].total += amount;  // Πρόσθεση του ποσού στο σύνολο του συγκεκριμένου μήνα
+        grandTotal += amount;                // Πρόσθεση του ποσού στο γενικό σύνολο όλων των μηνών.
     }
 
-    let html = "<div class='table-wrapper'><table class='data-table'>";
-    html += "<tr><th>Έτος</th><th>Ποσό</th><th>%</th><th>Γράφημα</th></tr>";
+    // Αν το σύνολο είναι 0, δεν συνεχίζουμε (δεν έχει νόημα να υπολογιστούν ποσοστά)
+    if (grandTotal === 0) { 
+      
+        container.innerHTML = `
+        <div style="margin-left:40px; margin-top:10px;">
+            Δεν υπάρχουν εγγραφές για τον συγκεκριμένο συνδυασμό φίλτρων.
+        </div>
+        `;
 
-    // Μετατρέπουμε σε array
+        selectedYearCategory = "all";  // Μεταβλητή, για την επιλεγόμενη κατηγορία (Όλες)
+        selectedYearPayment = "all";      // επιλεγμένος τρόπος πληρωμής
+        selectedYearSupplier = "all";     // επιλεγμένος προμηθευτής
+
+        container.style.display = "block";
+        summaryYearVisible = false; 
+        return; 
+        
+    }
+
+
+    //let html = "<div class='table-wrapper'><table class='data-table'>";   // Δημιουργία μόνο πίνακα
+
+
+    // ===== HTML: Φίλτρο κατηγορίας + πίνακας μηνών =====
+    // Δημιουργία πρώτα του φίλτρου και μετά του πίνακα    
+
+    let html = `           <!-- ξεκινάς να χτίζεις το HTML, δημιουργώντας ένα container για το φίλτρο --> 
+    
+    <!-- <div style="display:flex; flex-direction:column; align-items:flex-start; gap:8px; margin-left:40px; margin-top:-8px; margin-bottom:6px; font-size:14px; max-width:220px;">     κάθετη διάταξη -->
+
+    <!-- <div style="display:flex; align-items:center; gap:5px; margin-left:40px; margin-top:-8px; margin-bottom:6px; font-size:14px;">        οριζόντια διάταξη  --> 
+
+    <div style="display:flex; flex-direction:column; gap:6px; margin-left:40px; margin-top:-8px; margin-bottom:6px; font-size:14px;">
+
+    <div style="display:flex; align-items:center; gap:6px;">
+      <label style="display:inline-block; width:95px;">Κατηγορία:</label>   <!-- το κείμενο που βλέπει ο χρήστης -->
+      <select id="yearCategoryFilter" style="font-size:14px; width:200px;">             <!-- δημιουργεί το dropdown φίλτρου -->
+        <option value="all">Όλες</option>                                   <!-- η αρχική επιλογή του φίλτρου -->
+      </select>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:6px;">
+      <label style="display:inline-block; width:95px;">Πληρωμή:</label>
+      <select id="yearPaymentFilter" style="font-size:14px; width:200px;">
+        <option value="all">Όλες</option>
+      </select>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:6px;">
+      <label style="display:inline-block; width:95px;">Προμηθευτής:</label>
+      <select id="yearSupplierFilter" style="font-size:14px; width:200px;">
+        <option value="all">Όλοι</option>
+      </select>
+    </div>    
+
+    <div class='table-wrapper'><table class='data-table'>   <!-- Ξεκινάει ο πίνακας -->
+    `;
+
+
+
+    // ===== τέλος αρχικού HTML (φίλτρο + αρχή πίνακα) =====
+    // Δημιουργία επικεφαλίδων
+    html += "<tr><th>Έτος</th><th>Ποσό</th><th>%</th><th>Γράφημα</th></tr>"; 
+
+    // Μετατρέπουμε το αντικείμενο totalsByYear σε πίνακα, για να μπορεί να γίνει sort & for 
     let sortedYears = Object.entries(totalsByYear);
 
     // Χρονολογική ταξινόμηση
@@ -1560,43 +1643,108 @@ document.getElementById("yearBtn").addEventListener("click", function () {
         return new Date(a[0]) - new Date(b[0]);
     });
 
-    for (let [key, data] of sortedYears) {
+    for (let [key, data] of sortedYears) {     // περνάει έναν-έναν τους μήνες που προέκυψαν από την ταξινόμηση
 
-        let percent = (data.total / grandTotal) * 100;
+        let percent = (data.total / grandTotal) * 100;   // Υπολογισμός ποσοστού
 
-        html += "<tr>";
-        html += "<td>" + data.label + "</td>";
-        html += "<td class='amount-cell'>" + data.total.toFixed(2) + "</td>";
-        html += "<td>" + percent.toFixed(2) + "%</td>";
+        html += "<tr>";                          // Δημιουργία γραμμής πίνακα
+        html += "<td>" + data.label + "</td>";   // Εμφάνιση μήνα, π.χ. Ιανουάριος 2026
+        html += "<td class='amount-cell'>" + data.total.toFixed(2) + "</td>"; // Εμφάνιση ποσού (,00)
+        html += "<td>" + percent.toFixed(2) + "%</td>";         // Εμφάνιση ποσοστού (,00)
 
-        html += "<td>";
-        html += "<div class='bar'>";
+        html += "<td>";     // αρχή κελιού για το γράφημα (μπάρα ποσοστού)
+        html += "<div class='bar'>";  // Μέσα σ'αυτό το κελί μπαίνει η μπάρα γραφήματος
         html += "<div class='bar-fill' style='width:" + percent.toFixed(2) + "%'></div>";
         html += "</div>";
         html += "</td>";
         html += "</tr>";
     }
 
-    html += "<tr>";
-    html += "<td style='font-weight:bold;'>Σύνολο</td>";
+    html += "<tr>";     // Ξεκινά νέα γραμμή πίνακα, όπου θα μπει το σύνολο
+    html += "<td style='font-weight:bold;'>Σύνολο</td>";  // Κελί με τη λέξη σύνολο με έντονα γράμματα
+    // Κελί με το συνολικό ποσό όλων των μηνών:
     html += "<td class='amount-cell' style='font-weight:bold;'>" + grandTotal.toFixed(2) + "</td>";
-    html += "<td style='font-weight:bold;'>100.00%</td>";
-    html += "<td></td>";
-    html += "</tr>";
+    html += "<td style='font-weight:bold;'>100.00%</td>";  // Το συνολικό ποσοστό είναι πάντα 100,00%
+    html += "<td></td>";  // Αφήνουμε ένα κενό κελί
+    html += "</tr>";      // Κλείσιμο γραμμής "Σύνολο"
 
-    html += "</table></div>";
+    html += "</table></div>";  // κλείνει τον πίνακα και το container
 
-    container.innerHTML = wrapTable(html, "summaryYearContainer", "yearBtn");
+    // // Εμφάνιση του πίνακα στο container
+    container.innerHTML = wrapTable(html, "summaryMonthContainer", "yearBtn");
 
-    container.style.display = "block";
-    //this.textContent = "Έτη΄Χ΄";
-    summaryYearVisible = true;
+    // ===== Γέμισμα dropdown κατηγορίας =====
+    let select = document.getElementById("yearCategoryFilter"); // Παίρνουμε το dropdown που κάναμε
+    let paymentSelect = document.getElementById("yearPaymentFilter");
+    let supplierSelect = document.getElementById("yearSupplierFilter");
+
+    select.value = selectedYearCategory;   // Διατήρηση της επιλεγμένης κατηγορίας
+    paymentSelect.value = selectedYearPayment;
+    supplierSelect.value = selectedYearSupplier;
+
+    select.onchange = function () {    // Όταν αλλάξει η κατηγορία στο dropdown
+        selectedYearCategory = this.value;  // Αποθήκευση επιλογής χρήστη
+        summaryYearVisible = false;
+        // Ξαναεκτέλεση του κουμπιού για ανανέωση πίνακα :
+        document.getElementById("yearBtn").dispatchEvent(new Event("click"));
+    };
+
+    paymentSelect.onchange = function () {
+    selectedYearPayment = this.value;
+    summaryYearVisible = false;
+    document.getElementById("yearBtn").dispatchEvent(new Event("click"));
+    };
+
+    supplierSelect.onchange = function () {
+    selectedYearSupplier = this.value;
+    summaryYearVisible = false;
+    document.getElementById("yearBtn").dispatchEvent(new Event("click"));
+    };
+
+    // Δημιουργία λίστας μοναδικών κατηγοριών :
+    let categories = [...new Set(records.map(r => r.category))];     
+    let payments = [...new Set(records.map(r => r.payment))];
+    let suppliers = [...new Set(records.map(r => r.supplier))];
+    categories.sort();    // βάζει τις κατηγορίες σε σειρά
+    payments.sort();
+    suppliers.sort();
+
+    for (let cat of categories) {     // για κάθε κατηγορία δημιουργείται μία επιλογή στο dropdown
+        // προσθέτει την κατηγορία στη λίστα επιλογών με τις επόμενες 4 γραμμές
+        let option = document.createElement("option");
+        option.value = cat;
+        option.textContent = cat;
+        select.appendChild(option);
+    }
+
+    for (let pay of payments) {
+    let option = document.createElement("option");
+    option.value = pay;
+    option.textContent = pay;
+    paymentSelect.appendChild(option);
+    }
+
+    for (let sup of suppliers) {
+        let option = document.createElement("option");
+        option.value = sup;
+        option.textContent = sup;
+        supplierSelect.appendChild(option);
+    }
+
+    select.value = selectedYearCategory;  // ξαναβάζει την ήδη επιλεγμένη κατηγορία
+    paymentSelect.value = selectedYearPayment;
+    supplierSelect.value = selectedYearSupplier;
+    
+    container.style.display = "block";    // εμφανίζει το container
+    //this.textContent = "Μήνες΄Χ΄";
+    summaryYearVisible = true;           // Δήλωση ότι ο πίνακας είναι ορατός
     // Απενεργοποιούμε το κουμπί
     // this.disabled = true;
 
     // Αποκρύπτουμε τη φόρμα ώστε ο πίνακας να καταλαμβάνει όλο τον διαθέσιμο χώρο 
     document.getElementById("entryForm").style.display = "none"; 
 });
+
 
 
 
