@@ -1525,9 +1525,9 @@ document.getElementById("yearBtn").addEventListener("click", function () {
 
     if (summaryYearVisible) {             // Αν ο πίνακας σύνοψης των μηνών είναι ήδη ορατός
         container.style.display = "none";  // Απόκρυψη του container που περιέχει τον πίνακα
-        this.textContent = "Μήνες";        // Επαναφορά του κειμένου του κουμπιού
+        this.textContent = "Έτη";        // Επαναφορά του κειμένου του κουμπιού
         summaryYearVisible = false;       // Ο πίνακας ακόμη δεν είναι ορατός
-       // selectedMonthCategory = "all";     // Εμφάνιση όλων των κατηγοριών
+       // selectedYearCategory = "all";     // Εμφάνιση όλων των κατηγοριών
         return;                            // Τερματισμός της συνάρτησης εδώ.
     }
 
@@ -1594,7 +1594,7 @@ document.getElementById("yearBtn").addEventListener("click", function () {
     //let html = "<div class='table-wrapper'><table class='data-table'>";   // Δημιουργία μόνο πίνακα
 
 
-    // ===== HTML: Φίλτρο κατηγορίας + πίνακας μηνών =====
+    // ===== HTML: Φίλτρο κατηγορίας + πίνακας ετών =====
     // Δημιουργία πρώτα του φίλτρου και μετά του πίνακα    
 
     let html = `           <!-- ξεκινάς να χτίζεις το HTML, δημιουργώντας ένα container για το φίλτρο --> 
@@ -1607,7 +1607,7 @@ document.getElementById("yearBtn").addEventListener("click", function () {
 
     <div style="display:flex; align-items:center; gap:6px;">
       <label style="display:inline-block; width:95px;">Κατηγορία:</label>   <!-- το κείμενο που βλέπει ο χρήστης -->
-      <select id="yearCategoryFilter" style="font-size:14px; width:200px;">             <!-- δημιουργεί το dropdown φίλτρου -->
+      <select id="yearCategoryFilter" style="font-size:14px; width:200px;"> <!-- δημιουργεί το dropdown φίλτρου -->
         <option value="all">Όλες</option>                                   <!-- η αρχική επιλογή του φίλτρου -->
       </select>
     </div>
@@ -1643,12 +1643,12 @@ document.getElementById("yearBtn").addEventListener("click", function () {
         return new Date(a[0]) - new Date(b[0]);
     });
 
-    for (let [key, data] of sortedYears) {     // περνάει έναν-έναν τους μήνες που προέκυψαν από την ταξινόμηση
+    for (let [key, data] of sortedYears) {     // περνάει ένα-ένα τα έτη που προέκυψαν από την ταξινόμηση
 
         let percent = (data.total / grandTotal) * 100;   // Υπολογισμός ποσοστού
 
         html += "<tr>";                          // Δημιουργία γραμμής πίνακα
-        html += "<td>" + data.label + "</td>";   // Εμφάνιση μήνα, π.χ. Ιανουάριος 2026
+        html += "<td>" + data.label + "</td>";   // Εμφάνιση έτους, π.χ.  2026
         html += "<td class='amount-cell'>" + data.total.toFixed(2) + "</td>"; // Εμφάνιση ποσού (,00)
         html += "<td>" + percent.toFixed(2) + "%</td>";         // Εμφάνιση ποσοστού (,00)
 
@@ -1671,7 +1671,7 @@ document.getElementById("yearBtn").addEventListener("click", function () {
     html += "</table></div>";  // κλείνει τον πίνακα και το container
 
     // // Εμφάνιση του πίνακα στο container
-    container.innerHTML = wrapTable(html, "summaryMonthContainer", "yearBtn");
+    container.innerHTML = wrapTable(html, "summaryYearContainer", "yearBtn");
 
     // ===== Γέμισμα dropdown κατηγορίας =====
     let select = document.getElementById("yearCategoryFilter"); // Παίρνουμε το dropdown που κάναμε
