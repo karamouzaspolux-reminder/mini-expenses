@@ -1225,8 +1225,10 @@ const greekMonths = [
 // ================= SUMMARY BY MONTH =================
 let summaryMonthVisible = false;    // Μεταβλητή, δηλούσα ότι ο πίνακας δεν είναι ακόμη ορατός
 let selectedMonthCategory = "all";  // Μεταβλητή, για την επιλεγόμενη κατηγορία (Όλες)
+let selectedMonthPayment = "all";      // επιλεγμένος τρόπος πληρωμής
+let selectedMonthSupplier = "all";     // επιλεγμένος προμηθευτής
 
-document.getElementById("monthBtn").addEventListener("click", function () {
+document.getElementById("monthBtn").addEventListener("click", function () {    
 
     let container = document.getElementById("summaryMonthContainer"); // Μεταβλητή για τον πίνακα
 
@@ -1234,7 +1236,7 @@ document.getElementById("monthBtn").addEventListener("click", function () {
         container.style.display = "none";  // Απόκρυψη του container που περιέχει τον πίνακα
         this.textContent = "Μήνες";        // Επαναφορά του κειμένου του κουμπιού
         summaryMonthVisible = false;       // Ο πίνακας ακόμη δεν είναι ορατός
-        selectedMonthCategory = "all";     // Εμφάνιση όλων των κατηγοριών
+       // selectedMonthCategory = "all";     // Εμφάνιση όλων των κατηγοριών
         return;                            // Τερματισμός της συνάρτησης εδώ.
     }
 
@@ -1252,6 +1254,11 @@ document.getElementById("monthBtn").addEventListener("click", function () {
         
         // Αν έχει επιλεγεί συγκεκριμένη κατηγορία και η εγγραφή δεν ανήκει σ' αυτήν, την παραλείπουμε
         if (selectedMonthCategory !== "all" && record.category !== selectedMonthCategory) continue;
+        if (selectedMonthPayment !== "all" && record.payment !== selectedMonthPayment) continue;
+        if (selectedMonthSupplier !== "all" && record.supplier !== selectedMonthSupplier) continue;
+
+
+
         let amount = Number(record.amount) || 0;  // Μετατροπή του ποσού σε αριθμό
                                                   // Αν το ποσό είναι άδειο ή μη έγκυρο, θεωρείται 0
         let date = new Date(record.date);  // Δημιουργεί ένα αντικείμενο ημερομηνίας από το record.date
@@ -1274,9 +1281,22 @@ document.getElementById("monthBtn").addEventListener("click", function () {
     }
 
     // Αν το σύνολο είναι 0, δεν συνεχίζουμε (δεν έχει νόημα να υπολογιστούν ποσοστά)
-    if (grandTotal === 0) {
-        container.innerHTML = "<p>Δεν υπάρχουν ποσά για εμφάνιση.</p>";
-        return;
+    if (grandTotal === 0) { 
+      
+        container.innerHTML = `
+        <div style="margin-left:40px; margin-top:10px;">
+            Δεν υπάρχουν εγγραφές για τον συγκεκριμένο συνδυασμό φίλτρων.
+        </div>
+        `;
+
+        selectedMonthCategory = "all";  // Μεταβλητή, για την επιλεγόμενη κατηγορία (Όλες)
+        selectedMonthPayment = "all";      // επιλεγμένος τρόπος πληρωμής
+        selectedMonthSupplier = "all";     // επιλεγμένος προμηθευτής
+
+        container.style.display = "block";
+        summaryMonthVisible = false; 
+        return; 
+        
     }
 
 
@@ -1284,18 +1304,32 @@ document.getElementById("monthBtn").addEventListener("click", function () {
 
 
     // ===== HTML: Φίλτρο κατηγορίας + πίνακας μηνών =====
-    // Δημιουργία πρώτα του φίλτρου και μετά του πίνακα
+    // Δημιουργία πρώτα του φίλτρου και μετά του πίνακα    
     
-    let html = `                                <!-- ξεκινάς να χτίζεις το HTML -->    
-    <div style="display:flex; align-items:center; gap:12px; margin-left:40px; margin-top:-8px; margin-bottom:6px; font-size:14px;">    <!-- δημιουργείς ένα container για το φίλτρο -->
-    <label>Κατηγορία:</label>                   <!-- το κείμενο που βλέπει ο χρήστης -->
-    <select id="monthCategoryFilter" style="font-size:14px;">  <!-- δημιουργεί το dropdown φίλτρου -->
-        <option value="all">Όλες</option>       <!-- η αρχική επιλογή του φίλτρου -->
+    let html = `                 <!-- ξεκινάς να χτίζεις το HTML --> 
+    <div style="display:flex; align-items:center; gap:12px; margin-left:40px; margin-top:-8px; margin-bottom:6px; font-size:14px;">        <!-- δημιουργείς ένα container για το φίλτρο --> 
+
+    <label>Κατηγορία:</label>                                     <!-- το κείμενο που βλέπει ο χρήστης -->
+    <select id="monthCategoryFilter" style="font-size:14px;">     <!-- δημιουργεί το dropdown φίλτρου -->
+    <option value="all">Όλες</option>                             <!-- η αρχική επιλογή του φίλτρου --> 
     </select>
+
+    <label>Πληρωμή:</label>
+    <select id="monthPaymentFilter" style="font-size:14px;">
+    <option value="all">Όλες</option>
+    </select>
+
+    <label>Προμηθευτής:</label>
+    <select id="monthSupplierFilter" style="font-size:14px;">
+    <option value="all">Όλοι</option>
+    </select>
+
     </div>
-             
-    <div class='table-wrapper'><table class='data-table'>  <!-- Ξεκινάει ο πίνακας -->
+
+    <div class='table-wrapper'><table class='data-table'>   <!-- Ξεκινάει ο πίνακας -->
     `;
+
+
 
     // ===== τέλος αρχικού HTML (φίλτρο + αρχή πίνακα) =====
     // Δημιουργία επικεφαλίδων
@@ -1341,19 +1375,39 @@ document.getElementById("monthBtn").addEventListener("click", function () {
 
     // ===== Γέμισμα dropdown κατηγορίας =====
     let select = document.getElementById("monthCategoryFilter"); // Παίρνουμε το dropdown που κάναμε
+    let paymentSelect = document.getElementById("monthPaymentFilter");
+    let supplierSelect = document.getElementById("monthSupplierFilter");
 
     select.value = selectedMonthCategory;   // Διατήρηση της επιλεγμένης κατηγορίας
+    paymentSelect.value = selectedMonthPayment;
+    supplierSelect.value = selectedMonthSupplier;
 
     select.onchange = function () {    // Όταν αλλάξει η κατηγορία στο dropdown
         selectedMonthCategory = this.value;  // Αποθήκευση επιλογής χρήστη
-        summaryMonthVisible = false;         // Κλείνουμε τον πίνακα προσωρινά
+        summaryMonthVisible = false;
         // Ξαναεκτέλεση του κουμπιού για ανανέωση πίνακα :
         document.getElementById("monthBtn").dispatchEvent(new Event("click"));
     };
 
+    paymentSelect.onchange = function () {
+    selectedMonthPayment = this.value;
+    summaryMonthVisible = false;
+    document.getElementById("monthBtn").dispatchEvent(new Event("click"));
+    };
+
+    supplierSelect.onchange = function () {
+    selectedMonthSupplier = this.value;
+    summaryMonthVisible = false;
+    document.getElementById("monthBtn").dispatchEvent(new Event("click"));
+    };
+
     // Δημιουργία λίστας μοναδικών κατηγοριών :
-    let categories = [...new Set(records.map(r => r.category))]; 
+    let categories = [...new Set(records.map(r => r.category))];     
+    let payments = [...new Set(records.map(r => r.payment))];
+    let suppliers = [...new Set(records.map(r => r.supplier))];
     categories.sort();    // βάζει τις κατηγορίες σε σειρά
+    payments.sort();
+    suppliers.sort();
 
     for (let cat of categories) {     // για κάθε κατηγορία δημιουργείται μία επιλογή στο dropdown
         // προσθέτει την κατηγορία στη λίστα επιλογών με τις επόμενες 4 γραμμές
@@ -1363,7 +1417,23 @@ document.getElementById("monthBtn").addEventListener("click", function () {
         select.appendChild(option);
     }
 
+    for (let pay of payments) {
+    let option = document.createElement("option");
+    option.value = pay;
+    option.textContent = pay;
+    paymentSelect.appendChild(option);
+    }
+
+    for (let sup of suppliers) {
+        let option = document.createElement("option");
+        option.value = sup;
+        option.textContent = sup;
+        supplierSelect.appendChild(option);
+    }
+
     select.value = selectedMonthCategory;  // ξαναβάζει την ήδη επιλεγμένη κατηγορία
+    paymentSelect.value = selectedMonthPayment;
+    supplierSelect.value = selectedMonthSupplier;
     
     container.style.display = "block";    // εμφανίζει το container
     //this.textContent = "Μήνες΄Χ΄";
