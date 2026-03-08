@@ -66,7 +66,7 @@
   .form-row {
       display: flex;              /* Βάζουμε label και input στην ίδια γραμμή, τα ευθυγραμμίζουμε. */
       align-items: center;        /* Κατακόρυφη ευθυγράμμιση */
-      margin-bottom: 5px;        /* Απόσταση μεταξύ γραμμών */
+      margin-bottom: 0px;        /* Απόσταση μεταξύ γραμμών */
   }
 
   .form-row label {
@@ -109,6 +109,7 @@
                       /* justify-content: flex-start (αριστερά), justify-content: flex-end (δεξιά) */
                       /* justify-content: center (κέντρο) */
     font-size: 5px;
+    padding: 16px;
   }
 
   
@@ -221,11 +222,16 @@
  }
 
  .data-transfer {
-    display: flex;
-    flex-wrap: wrap;   /* επιτρέπει να σπάνε γραμμή */
-    gap: 6px;          /* απόσταση μεταξύ κουμπιών */
-    margin-top: 6px;
-   padding: 6px;
+    display: flex;    /* κάνει τα στοιχεία μέσα στο div να μπουν σε σειρά */
+    justify-content: center;   /* τα φέρνει στο κέντρο οριζόντια */
+    /* align-items: center;    στο κέντρο κάθετα */
+    /* justify-content: center;  align-items: center;  το ένα κάτω από το άλλο για απόλυτο κέντρο */ 
+    
+    /* flex-wrap: wrap;   επιτρέπει να σπάνε γραμμή */
+    gap: 10px;          /* απόσταση μεταξύ κουμπιών */
+    margin-top: 15px;
+    margin-bottom: 1px;
+   /* padding: 6px 14px; */
  }
 
 
@@ -359,14 +365,16 @@
   <div class="section">
     
     <div class="button-row">       
-        <button type="button" id="saveBtn" title="Αποθήκευση">💾</button>
+        <button type="button" id="saveBtn" title="Αποθήκευση">💾</button>       
         <button type="button" id="newBtn" title="Νέα εγγραφή">➕</button>
         <button type="button" id="delBtn" title="Διαγραφή">🗑️</button>
         <button type="button" id="firstBtn" title="Πρώτη εγγραφή">⏮️</button>
         <button type="button" id="previousBtn" title="Προηγούμενη εγγραφή">◀️</button>
         <button type="button" id="nextBtn" title="Επόμενη εγγραφή">▶️</button>
         <button type="button" id="lastBtn" title="Τελευταία εγγραφή">⏭️</button>  
-        <button type="button" id="searchBtn" title="Αναζήτηση εγγραφής">🔍</button>         
+        <button type="button" id="searchBtn" title="Αναζήτηση εγγραφής">🔍</button>  
+        <button type="button" id="copyBtn" title="Αντιγραφή εγγραφής">📄</button> 
+        <button type="button" id="receiptTotalBtn" title="Σύνολο απόδειξης">🧾</button>      
         <button type="button" id="helpBtn" class="helpBtn" title="Οδηγίες">?</button>         
         
 
@@ -416,13 +424,16 @@
 
 
     <div class="form-row">
-        <label>Προμηθευτής</label>
-        <input type="text" id="supplier">  <!-- Πεδίο κειμένου -->      
+      <label>Προμηθευτής</label>
+      <input type="text" id="supplier" list="supplierList">   <!-- ΠΕΔΙΟ ΛΙΣΤΑΣ ΤΙΜΩΝ -->
+      <datalist id="supplierList">
+      </datalist>
     </div>
 
     <div class="form-row">
         <label>Κατηγορία</label>
-        <input type="text" id="category" list="categoryList">   <!-- ΠΕΔΙΟ ΛΙΣΤΑΣ ΤΙΜΩΝ -->
+        <!-- <input type="text" id="category" list="categoryList">    ΠΕΔΙΟ ΛΙΣΤΑΣ ΤΙΜΩΝ ΜΕ ΕΤΟΙΜΕΣ.... -->
+        <input type="text" id="category" list="categoryList" oninput="filterCategoryList()">
         <datalist id="categoryList">
              <!-- Οι επιλογές θα μπαίνουν δυναμικά, βάζουμε μερικές τώρα. -->
              <option value="Τρόφιμα">
@@ -449,8 +460,15 @@
     
     <div class="status-bar" id="statusBar"></div>
     
-  
+    <!-- Πλαίσιο Εισαγωγής-Εξαγωγής-Διαγραφής Όλων των Εγγραφών -->
+    <div class="data-transfer">
+      <button onclick="exportData()">Backup</button>
+      <button onclick="importData()">Εισαγωγή</button>
+      <button onclick="clearAllData()">Καθαρισμός</button>
+      <input type="file" id="importFile" accept=".json" hidden>
+    </div>
 
+ 
 </div>  
 
 </form>
@@ -467,13 +485,7 @@
 <div id="summaryMonthContainer" style="margin-top:15px;"></div>    <!-- Πίνακας Δαπανών Κατά Μήνα -->
 <div id="summaryYearContainer" style="margin-top:15px;"></div>     <!-- Πίνακας Δαπανών Κατά Έτος -->
 
-<!-- Πλαίσιο Εισαγωγής-Εξαγωγής-Διαγραφής Όλων των Εγγραφών -->
-<div class="data-transfer">
-  <button onclick="exportData()">Backup</button>
-  <button onclick="importData()">Εισαγωγή</button>
-  <button onclick="clearAllData()">Καθαρισμός</button>
-  <input type="file" id="importFile" accept=".json" hidden>
-</div>
+
 
 
 <!-- ΠΛΑΙΣΙΟ ΟΔΗΓΙΩΝ -->
@@ -542,9 +554,79 @@ let savedData = localStorage.getItem(STORAGE_KEY); // αποθηκεύσουμε
 if (savedData) {                       // Εάν υπάρχουν δεδομένα,
     records = JSON.parse(savedData);   // φορτώνονται, μετατρέποντας το string πίσω σε πίνακα
     currentIndex = records.length - 1;
+    rebuildSupplierList();   // γεμίζει τη λίστα προμηθευτών από τα records
+    rebuildCategoryList();   // γεμίζει τη λίστα κατηγοριών από τα records
     if (records.length > 0) displayRecord();
 }
 
+
+// Φόρτωση της λίστας των Προμηθευτών
+function rebuildSupplierList() {
+
+    let list = document.getElementById("supplierList");
+
+    list.innerHTML = "";
+
+    let suppliers = [...new Set(records.map(r => r.supplier))];
+
+    suppliers.sort();
+
+    for (let s of suppliers) {
+
+        if (!s) continue;
+
+        let option = document.createElement("option");
+        option.value = s;
+
+        list.appendChild(option);
+    }
+}
+
+
+// Φόρτωση της λίστας των Κατηγοριών
+function rebuildCategoryList() {
+
+    let list = document.getElementById("categoryList"); // Παίρνουμε τη datalist των κατηγοριών από το HTML
+
+    // Παίρνουμε πρώτα τις κατηγορίες που υπάρχουν ήδη στο HTML
+    let htmlCategories = [...list.options].map(o => o.value);
+
+    // Παίρνουμε τις κατηγορίες από τις εγγραφές
+    let recordCategories = records.map(r => r.category);
+
+    // Ενώνουμε τις δύο λίστες και αφαιρούμε διπλότυπα
+    let categories = [...new Set([...htmlCategories, ...recordCategories])];
+
+    list.innerHTML = "";     // Καθαρίζουμε  τη λίστα     
+
+    categories.sort();   // Ταξινόμηση αλφαβητικά
+
+    for (let c of categories) {                          // Δημιουργία option για κάθε κατηγορία
+        if (!c) continue;                                // Αν η κατηγορία είναι κενή, την παραλείπουμε       
+        let option = document.createElement("option");   // Δημιουργούμε ένα option        
+        option.value = c;                                // Η τιμή του option είναι η κατηγορία        
+        list.appendChild(option);     // Το προσθέτουμε στη datalist
+    }
+}
+
+
+
+// ======================================
+// Φιλτράρισμα κατηγοριών καθώς γράφει ο χρήστης
+// ======================================
+function filterCategoryList() {
+
+    let input = document.getElementById("category").value.toLowerCase();
+    let list = document.getElementById("categoryList");
+
+    for (let option of list.options) {
+
+        let value = option.value.toLowerCase();
+
+        // εμφανίζονται μόνο όσα αρχίζουν από τα γράμματα που γράφτηκαν
+        option.hidden = !value.startsWith(input);
+    }
+}
 
 
 
@@ -578,17 +660,25 @@ function getNextId() {
 
 
 
+
+
+function formatSupplier(name) {    // Για αποφυγή διπλοκαταχωρήσεων προμηθευτών
+    if (!name) return "";
+    name = name.trim();
+    return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
+
+
 // ================= SAVE =================
 document.getElementById("saveBtn").addEventListener("click", function () {
 
     let categoryValue = document.getElementById("category").value.trim();
-    let dataList1 = document.getElementById("categoryList"); // Ορισμός μεταβλητής με τις τιμές της Λίστας Κατηγοριών
-
-    // Έλεγχος αν η κατηγορία που γράψαμε στο πεδίο Λίστας υπάρχει ήδη στη λίστα Κατηγοριών
-    let exists = false;
+    let dataList1 = document.getElementById("categoryList"); // Ορισμός μεταβλητής με τις τιμές της Λίστας 
     
-    // Αν υπάρχει, δεν την προσθέτουμε
-    for (let option of dataList1.options) {
+    let exists = false;                           // Έλεγχος αν υπάρχει η Κατηγορία    
+    
+    for (let option of dataList1.options) {       // Αν υπάρχει, δεν την προσθέτουμε
         if (option.value === categoryValue) {
             exists = true;
             break;
@@ -605,13 +695,39 @@ document.getElementById("saveBtn").addEventListener("click", function () {
     // .............Εδώ τελειώνει η διαδικασία που αφορά το πεδίο της Λίστας  Κατηγοριών.
 
 
+    // ================= SUPPLIER LIST =================
+
+let supplierValue = formatSupplier(document.getElementById("supplier").value);
+document.getElementById("supplier").value = supplierValue;
+let dataListSupplier = document.getElementById("supplierList");
+
+let supplierExists = false;                       // Έλεγχος αν υπάρχει ο Προμηθευτής
+
+for (let option of dataListSupplier.options) {    //  Αν υπάρχει, δεν τον προσθέτουμε
+    if (option.value === supplierValue) {
+        supplierExists = true;
+        break;
+    }
+}
+
+if (!supplierExists && supplierValue !== "") {        // Αν δεν υπάρχει και δεν είναι κενή, την προσθέτουμε
+    let newOption = document.createElement("option"); // Ορίζουμε μια μεταβλητή(newOption)
+    newOption.value = supplierValue;                  // Παίρνει την τιμή που γράψαμε
+    dataListSupplier.appendChild(newOption);          // Την προσθέτει στη λίστα
+}
+
+
+// .............Εδώ τελειώνει η διαδικασία που αφορά το πεδίο της Λίστας  Προμηθευτών.
+
+
+
     // Δημιουργούμε αντικείμενο εγγραφής
     let record = {
         id: (currentIndex === -1) ? getNextId() : records[currentIndex].id,
         date: document.getElementById("date").value,
         document: document.getElementById("document").value,        
         payment: document.getElementById("payment").value,
-        supplier: document.getElementById("supplier").value,
+        supplier: supplierValue,
         category: categoryValue,
         amount: parseFloat(document.getElementById("amount").value)
     };
@@ -633,6 +749,84 @@ document.getElementById("saveBtn").addEventListener("click", function () {
     // ===== STATUS MESSAGE =====
     let status = document.getElementById("statusBar");
     status.textContent = "Η εγγραφή αποθηκεύτηκε";
+});
+
+
+
+// ================= COPY RECORD =================
+document.getElementById("copyBtn").addEventListener("click", function () {
+
+    if (currentIndex === -1) {
+        alert("Δεν υπάρχει εγγραφή για αντιγραφή.");
+        return;
+    }
+
+    let current = records[currentIndex];
+
+    // Δημιουργία νέας εγγραφής
+    let newRecord = {
+        id: getNextId(),
+        date: current.date,
+        document: current.document,
+        payment: current.payment,
+        supplier: current.supplier,
+        category: "",
+        amount: ""
+    };
+
+    // Προσθήκη στον πίνακα
+    records.push(newRecord);
+
+    currentIndex = records.length - 1;
+
+    // Αποθήκευση
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+
+    // Εμφάνιση νέας εγγραφής
+    displayRecord();
+    renderTable(records);
+
+    // Μεταφορά στο πεδίο κατηγορίας
+    document.getElementById("category").focus();
+
+    // μήνυμα
+    document.getElementById("statusBar").textContent =
+        "Δημιουργήθηκε νέα εγγραφή από αντιγραφή";
+});
+
+
+
+
+// ================= RECEIPT TOTAL =================
+document.getElementById("receiptTotalBtn").addEventListener("click", function () {
+
+    if (currentIndex === -1) {
+        alert("Δεν υπάρχει ενεργή εγγραφή.");
+        return;
+    }
+
+    let current = records[currentIndex];
+
+    let total = 0;
+
+    for (let r of records) {
+
+        if (
+            r.date === current.date &&
+            r.document === current.document &&
+            r.supplier === current.supplier
+        ) {
+            total += Number(r.amount) || 0;
+        }
+    }
+
+    alert(
+        "Σύνολο παραστατικού:\n\n" +
+        current.supplier + "\n" +
+        current.date + "\n\n" +
+        total.toFixed(2) + " €"
+    );
+
 });
 
 
@@ -1866,8 +2060,6 @@ document.getElementById("helpBtn").addEventListener("click", function() {
 
 
     // Τέλος μηχανισμού Modal .................................
-
-
     
 
 });
@@ -1878,6 +2070,13 @@ document.getElementById("closeHelpBtn").addEventListener("click", function() {
 });
 
 
+// ΕΣΤΙΑΣΗ ΣΤΟ ΚΟΥΜΠΙ ΑΠΟΘΗΚΕΥΣΗ ΜΕΤΑ ΤΗΝ ΟΛΟΚΛΗΡΩΣΗ ΜΙΑΣ ΕΓΓΡΑΦΗΣ
+document.getElementById("amount").addEventListener("keydown", function(e) {
+  if (e.key === "Tab") {
+    e.preventDefault();
+    document.getElementById("saveBtn").focus();
+  }
+});
 
 
 </script>
