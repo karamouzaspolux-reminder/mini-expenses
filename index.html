@@ -113,6 +113,19 @@
   }
 
   
+  .button-row2 {
+    display: flex;
+    flex-wrap: wrap;   /* επιτρέπει να σπάνε γραμμή */
+    gap: 1px;          /* απόσταση μεταξύ κουμπιών */
+    margin-top: 0px;    
+    /* margin-left: 20px;  Ξεκινάνε από αριστερά  */
+    margin-bottom: 19px;
+    justify-content: center;  /* κεντράρισμα των κουμπιών οριζόντια, align-items = κάθετη στοίχιση */
+                      /* justify-content: flex-start (αριστερά), justify-content: flex-end (δεξιά) */
+  }
+
+
+
   .button-row + .button-row {
     margin-top: 1px;   /* Μικρό κενό μόνο μεταξύ των δύο σειρών */
   }
@@ -141,6 +154,24 @@
   }
 
     
+
+  .button-row2 button {
+      padding: 1px 2px;         /* Εσωτερικός χώρος */
+      border: 1px solid #bbb;
+      background-color: #f8f9fa;
+      border-radius: 4px;        /* Στρογγύλεμα των γωνιών των κουμπιών, όσο > αριθμός => > στρογγύλεμα.*/
+      cursor: pointer;           /* Δείχνει ότι είναι clickable */
+      padding: 4px 8px;
+      font-size: 15px;
+  }
+
+
+
+  .button-row2 button:hover {    /* Όταν το ποντίκι πάει πάνω από το κουμπί→ άλλαξε το background.*/
+    background-color: #e2e6ea;  /* Αλλαγή χρώματος στο hover */
+  }
+
+
 
   /* Wrapper για scroll σε κινητό */
   .table-wrapper {
@@ -358,7 +389,6 @@
 </div>
 
 
-
 <form id="entryForm">   <!-- Η φόρμα ομαδοποιεί πεδία εισαγωγής.  Δεν κάνει ακόμη τίποτα. Απλώς οργανώνει δεδομένα. -->
 
   
@@ -367,18 +397,19 @@
     <div class="button-row">       
         <button type="button" id="saveBtn" title="Αποθήκευση">💾</button>       
         <button type="button" id="newBtn" title="Νέα εγγραφή">➕</button>
-        <button type="button" id="delBtn" title="Διαγραφή">🗑️</button>
+        <button type="button" id="delBtn" title="Διαγραφή">🗑️</button>        
+        <button type="button" id="copyBtn" title="Αντιγραφή εγγραφής">📄</button> 
+        <button type="button" id="receiptTotalBtn" title="Σύνολο απόδειξης">🧾</button>      
+        <button type="button" id="helpBtn" class="helpBtn" title="Οδηγίες">?</button>        
+    </div>    
+
+    <div class="button-row2">        
         <button type="button" id="firstBtn" title="Πρώτη εγγραφή">⏮️</button>
         <button type="button" id="previousBtn" title="Προηγούμενη εγγραφή">◀️</button>
         <button type="button" id="nextBtn" title="Επόμενη εγγραφή">▶️</button>
         <button type="button" id="lastBtn" title="Τελευταία εγγραφή">⏭️</button>  
-        <button type="button" id="searchBtn" title="Αναζήτηση εγγραφής">🔍</button>  
-        <button type="button" id="copyBtn" title="Αντιγραφή εγγραφής">📄</button> 
-        <button type="button" id="receiptTotalBtn" title="Σύνολο απόδειξης">🧾</button>      
-        <button type="button" id="helpBtn" class="helpBtn" title="Οδηγίες">?</button>         
-        
-
-    </div>     
+        <button type="button" id="searchBtn" title="Αναζήτηση εγγραφής">🔍</button>          
+    </div>  
     
 
     <!-- Το Modal (αρχικά κρυφό) -->
@@ -500,15 +531,22 @@
             style="cursor:pointer; font-size:22px; color:#666;">✖</span>
         </div>
         
-        <p><b>Κουμπιά πλοήγησης:</b><br>
+        <p><b>Κουμπιά λειτουργιών:</b><br>
         <b>💾</b> Αποθήκευση εγγραφής<br>
         <b>➕</b> Νέα εγγραφή<br>
         <b>🗑️ </b> Διαγραφή εγγραφής<br>
-        <b>⏮️</b> Μετάβαση στη  πρώτη εγγραφή<br>
-        <b>◀️</b> Μετάβαση στη  προηγούμενη εγγραφή<br>
-        <b>▶️</b> Μετάβαση στη  επόμενη εγγραφή<br>
-        <b>⏭️</b> Μετάβαση στη  τελευταία εγγραφή<br>
+        <b>📄</b> Αντιγραφή εγγραφής<br>
+        <b>🧾</b> Σύνολο απόδειξης (για αποδείξεις με ποικιλία ειδών)<br>
+        <b>?</b> Οδηγίες<br>
+       
+        <p><b>Κουμπιά πλοήγησης:</b><br>        
+        <b>⏮️</b> Πρώτη εγγραφή<br>
+        <b>◀️</b> Προηγούμενη εγγραφή<br>
+        <b>▶️</b> Επόμενη εγγραφή<br>
+        <b>⏭️</b> Τελευταία εγγραφή<br>
         <b>🔍</b> Αναζήτηση εγγραφής<br><br>
+
+
         <b>Ορισμένα πεδία έχουν προτεινόμενες τιμές:</b><br>
         * Παραστατικό<br>    
         * Πληρωμή<br>        
@@ -569,7 +607,7 @@ function rebuildSupplierList() {
 
     let suppliers = [...new Set(records.map(r => r.supplier))];
 
-    suppliers.sort();
+    suppliers.sort((a, b) => a.localeCompare(b, 'el'));
 
     for (let s of suppliers) {
 
@@ -599,7 +637,7 @@ function rebuildCategoryList() {
 
     list.innerHTML = "";     // Καθαρίζουμε  τη λίστα     
 
-    categories.sort();   // Ταξινόμηση αλφαβητικά
+    categories.sort((a, b) => a.localeCompare(b, 'el'));;   // Ταξινόμηση αλφαβητικά
 
     for (let c of categories) {                          // Δημιουργία option για κάθε κατηγορία
         if (!c) continue;                                // Αν η κατηγορία είναι κενή, την παραλείπουμε       
@@ -1080,10 +1118,10 @@ function renderTable(dataArray) {
     select_3.innerHTML = "<option value='all'>Όλες</option>";     //......f1......
 
     let categories = [...new Set(records.map(r => r.category))];
-    categories.sort();
+    categories.sort((a, b) => a.localeCompare(b, 'el'));
 
     let suppliers = [...new Set(records.map(r => r.supplier))];  // .......g........
-    suppliers.sort();
+    suppliers.sort((a, b) => a.localeCompare(b, 'el'));
     let payments = [...new Set(records.map(r => r.payment))];  // .......g1........
     payments.sort();
 
@@ -1662,9 +1700,9 @@ document.getElementById("monthBtn").addEventListener("click", function () {
     let categories = [...new Set(records.map(r => r.category))];     
     let payments = [...new Set(records.map(r => r.payment))];
     let suppliers = [...new Set(records.map(r => r.supplier))];
-    categories.sort();    // βάζει τις κατηγορίες σε σειρά
+    categories.sort((a, b) => a.localeCompare(b, 'el'));    // βάζει τις κατηγορίες σε σειρά
     payments.sort();
-    suppliers.sort();
+    suppliers.sort((a, b) => a.localeCompare(b, 'el'));
 
     for (let cat of categories) {     // για κάθε κατηγορία δημιουργείται μία επιλογή στο dropdown
         // προσθέτει την κατηγορία στη λίστα επιλογών με τις επόμενες 4 γραμμές
@@ -1899,9 +1937,9 @@ document.getElementById("yearBtn").addEventListener("click", function () {
     let categories = [...new Set(records.map(r => r.category))];     
     let payments = [...new Set(records.map(r => r.payment))];
     let suppliers = [...new Set(records.map(r => r.supplier))];
-    categories.sort();    // βάζει τις κατηγορίες σε σειρά
+    categories.sort((a, b) => a.localeCompare(b, 'el'));    // βάζει τις κατηγορίες σε σειρά
     payments.sort();
-    suppliers.sort();
+    suppliers.sort((a, b) => a.localeCompare(b, 'el'));
 
     for (let cat of categories) {     // για κάθε κατηγορία δημιουργείται μία επιλογή στο dropdown
         // προσθέτει την κατηγορία στη λίστα επιλογών με τις επόμενες 4 γραμμές
