@@ -145,6 +145,7 @@
       cursor: pointer;           /* Δείχνει ότι είναι clickable */
       padding: 4px 8px;
       font-size: 15px;
+      margin-bottom: -8px;
   }
 
 
@@ -400,8 +401,7 @@
         <button type="button" id="newBtn" title="Νέα εγγραφή">➕</button>
         <button type="button" id="delBtn" title="Διαγραφή">🗑️</button>        
         <button type="button" id="copyBtn" title="Αντιγραφή εγγραφής">📄</button> 
-        <button type="button" id="receiptTotalBtn" title="Σύνολο απόδειξης">🧾</button>      
-        <button type="button" id="helpBtn" class="helpBtn" title="Οδηγίες">?</button>        
+        <button type="button" id="receiptTotalBtn" title="Σύνολο απόδειξης">🧾</button>                
     </div>    
 
     <div class="button-row2">        
@@ -409,7 +409,8 @@
         <button type="button" id="previousBtn" title="Προηγούμενη εγγραφή">◀️</button>
         <button type="button" id="nextBtn" title="Επόμενη εγγραφή">▶️</button>
         <button type="button" id="lastBtn" title="Τελευταία εγγραφή">⏭️</button>  
-        <button type="button" id="searchBtn" title="Αναζήτηση εγγραφής">🔍</button>          
+        <button type="button" id="searchBtn" title="Αναζήτηση εγγραφής">🔍</button>  
+        <button type="button" id="helpBtn" class="helpBtn" title="Οδηγίες">?</button>         
     </div>  
     
 
@@ -534,18 +535,20 @@
         
         <p><b>Κουμπιά λειτουργιών:</b><br>
         <b>💾</b> Αποθήκευση εγγραφής<br>
+        <b>Esc</b> Ακύρωση νέας εγγραφής ή μεταβολών παλιάς<br>
         <b>➕</b> Νέα εγγραφή<br>
         <b>🗑️ </b> Διαγραφή εγγραφής<br>
         <b>📄</b> Αντιγραφή εγγραφής<br>
         <b>🧾</b> Σύνολο απόδειξης (για αποδείξεις με ποικιλία ειδών)<br>
-        <b>?</b> Οδηγίες<br>
+        
        
         <p><b>Κουμπιά πλοήγησης:</b><br>        
         <b>⏮️</b> Πρώτη εγγραφή<br>
         <b>◀️</b> Προηγούμενη εγγραφή<br>
         <b>▶️</b> Επόμενη εγγραφή<br>
         <b>⏭️</b> Τελευταία εγγραφή<br>
-        <b>🔍</b> Αναζήτηση εγγραφής<br><br>
+        <b>🔍</b> Αναζήτηση εγγραφής<br>
+        <b>?</b> Οδηγίες<br><br>
 
 
         <b>Ορισμένα πεδία έχουν προτεινόμενες τιμές:</b><br>
@@ -710,8 +713,10 @@ function formatSupplier(name) {    // Για αποφυγή διπλοκαταχ
 
 
 
- // SAVE.....................
+ // ......................SAVE...............................................
+
 // ================= category list =================
+
 document.getElementById("saveBtn").addEventListener("click", function () {
 
     let categoryValue = document.getElementById("category").value.trim();
