@@ -105,11 +105,12 @@
     margin-top: 0px;    
     /* margin-left: 20px;  Ξεκινάνε από αριστερά  */
     margin-bottom: 5px;
+    margin-left: 20px;
     justify-content: flex-start;  /* κεντράρισμα των κουμπιών οριζόντια, align-items = κάθετη στοίχιση */
                       /* justify-content: flex-start (αριστερά), justify-content: flex-end (δεξιά) */
                       /* justify-content: center (κέντρο) */
     font-size: 5px;
-    padding: 16px;
+    padding: 1px 3px;
   }
 
   
@@ -129,6 +130,7 @@
   .button-row + .button-row {
     margin-top: 1px;   /* Μικρό κενό μόνο μεταξύ των δύο σειρών */
   }
+  
 
  
 
@@ -174,12 +176,10 @@
 
 
   button {
-
   cursor: pointer;        /* δείχνει χεράκι στο ποντίκι */
-  padding: 4px 10px;      /* μικρό εσωτερικό περιθώριο */
+  padding: 2px 3px;      /* μικρό εσωτερικό περιθώριο */
   border-radius: 4px;     /* ελαφρώς στρογγυλεμένες γωνίες */
   transition: 0.2s;       /* ομαλή αλλαγή εφέ */
-
   }
 
   button:hover {
@@ -393,13 +393,13 @@
 
 <h1>ΤΑ ΕΞΟΔΑ ΜΟΥ</h1>      <!-- Επικεφαλίδα επιπέδου 1. Είναι σημασιολογικό στοιχείο (semantic). -->    
 
-<div class="button-row1">
-      <button type="button" id="toggleTableBtn">Πίνακας</button> <!-- ΚΟΥΜΠΙ ΓΙΑ ΚΡΥΨΙΜΟ ΠΙΝΑΚΑ -->      
+<div class="button-row1">            
       <button type="button" id="monthBtn">Μήνες</button>  <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
       <button type="button" id="yearBtn">Έτη</button>  <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->      
       <button type="button" id="categoryBtn">Κατηγορίες</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
       <button type="button" id="paymentBtn">Πληρωμές</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
-      <button type="button" id="supplierBtn">Προμηθευτές</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->      
+      <button type="button" id="supplierBtn">Προμηθευτές</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->  
+      <button type="button" id="toggleTableBtn">Πίνακας</button> <!-- ΚΟΥΜΠΙ ΓΙΑ ΚΡΥΨΙΜΟ ΠΙΝΑΚΑ -->    
 </div>
 
 
