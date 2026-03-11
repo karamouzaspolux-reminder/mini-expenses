@@ -110,10 +110,31 @@
                       /* justify-content: flex-start (αριστερά), justify-content: flex-end (δεξιά) */
                       /* justify-content: center (κέντρο) */
     font-size: 5px;
-    padding: 1px 3px;
+
+    border: none;
+    background: transparent;
+    border-bottom: 2px solid transparent;
+    
   }
 
   
+  .button-row1 button:hover{
+    border-bottom: 2px solid #2e6dea;
+  }
+
+  .button-row1 button{
+    border: none;
+    outline: none;
+  }
+
+
+  /* ενεργό tab */
+  .button-row1 button.active{
+      border-bottom: 2px solid #2e6dea;
+      font-weight: bold;
+  }
+
+
   .button-row2 {
     display: flex;
     flex-wrap: wrap;   /* επιτρέπει να σπάνε γραμμή */
@@ -379,9 +400,9 @@
   display: block;
 }
 
-
-
-
+#toggleTableBtn {
+display: none;
+}
 
 </style>
 
@@ -399,7 +420,7 @@
       <button type="button" id="categoryBtn">Κατηγορίες</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
       <button type="button" id="paymentBtn">Πληρωμές</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->
       <button type="button" id="supplierBtn">Προμηθευτές</button> <!--ΚΟΥΜΠΙ ΓΙΑ ΣΥΓΚ.ΠΙΝΑΚΑ -->  
-      <button type="button" id="toggleTableBtn">Πίνακας</button> <!-- ΚΟΥΜΠΙ ΓΙΑ ΚΡΥΨΙΜΟ ΠΙΝΑΚΑ -->    
+      <button type="button" id="toggleTableBtn">Πίνακας</button>  <!-- ΚΟΥΜΠΙ ΓΙΑ ΚΡΥΨΙΜΟ ΠΙΝΑΚΑ -->    
 </div>
 
 
@@ -1041,8 +1062,8 @@ document.getElementById("lastBtn").onclick = () => {
 
 
 // ================= DISPLAY =================
-function displayRecord() {
-
+function displayRecord() {   
+   
     //    "||" = "Or",  "&&" = "And",  "!" = "Not"
     if (currentIndex < 0 || currentIndex >= records.length) return;  // 0 εγγραφές => τίποτε
 
@@ -1073,12 +1094,7 @@ function displayRecord() {
 function wrapTable(htmlContent, containerId, buttonId) {
     return `
     <div class="table-box">
-        <button class="close-table"
-            onclick="
-                document.getElementById('${containerId}').style.display='none';
-                document.getElementById('${buttonId}').disabled=false;
-                document.getElementById('entryForm').style.display='block';
-            ">
+        <button class="close-table" onclick="closeTable()">
             ✖
         </button>
         <div class="table-wrapper">
@@ -1089,27 +1105,37 @@ function wrapTable(htmlContent, containerId, buttonId) {
 }
 
 
+// function closeTable(containerId, buttonId) {
+
 function closeTable() {
 
     const container = document.getElementById("tableContainer");
     const btn = document.getElementById("toggleTableBtn");
     const form = document.getElementById("entryForm");
 
-    // Κρύβουμε τον πίνακα
-    if (container) container.style.display = "none";
+    if (container) {
+        container.style.display = "none";
+        container.innerHTML = "";   // διαγραφή πίνακα και φίλτρων
+    }
 
-    // Επανενεργοποιούμε το κουμπί
     if (btn) btn.disabled = false;
-
-    // Επανεμφανίζουμε τη φόρμα εισαγωγής (επιστροφή σε mode καταχώρισης)
     if (form) form.style.display = "block";
 
-   
+    // RESET FILTERS
+    selectedCategory = "all";
+    selectedSupplier = "all";
+    selectedPayment = "all";
+
+    // Καθαρισμός μηνύματος
+    document.getElementById("resultsInfo").innerText = "";
 }
+
+    
 
 
 // ================= RENDER TABLE =================
 function renderTable(dataArray) {
+   
 
     let container = document.getElementById("tableContainer");
 
@@ -1283,6 +1309,8 @@ function renderTable(dataArray) {
     else
         filterText = " ";
 
+    
+
     document.getElementById("resultsInfo").innerText = filterText;
 
 }
@@ -1319,7 +1347,7 @@ document.getElementById("toggleTableBtn").addEventListener("click", function () 
 document.getElementById("searchBtn").addEventListener("click", function () {
 
     // Δημιουργούμε τον πίνακα
-    renderTable(records);
+    renderTable(records);    
 
     // Τον εμφανίζουμε
     document.getElementById("tableContainer").style.display = "block";
@@ -1619,6 +1647,10 @@ document.getElementById("monthBtn").addEventListener("click", function () {
         container.style.display = "none";  // Απόκρυψη του container που περιέχει τον πίνακα
         this.textContent = "Μήνες";        // Επαναφορά του κειμένου του κουμπιού
         summaryMonthVisible = false;       // Ο πίνακας ακόμη δεν είναι ορατός
+        // reset φίλτρων
+        selectedMonthCategory = "all";
+        selectedMonthPayment = "all";
+        selectedMonthSupplier = "all";
        // selectedMonthCategory = "all";     // Εμφάνιση όλων των κατηγοριών
         return;                            // Τερματισμός της συνάρτησης εδώ.
     }
@@ -1856,6 +1888,10 @@ document.getElementById("yearBtn").addEventListener("click", function () {
         container.style.display = "none";  // Απόκρυψη του container που περιέχει τον πίνακα
         this.textContent = "Έτη";        // Επαναφορά του κειμένου του κουμπιού
         summaryYearVisible = false;       // Ο πίνακας ακόμη δεν είναι ορατός
+        // reset φίλτρων
+        selectedYearCategory = "all";
+        selectedYearPayment = "all";
+        selectedYearSupplier = "all";
        // selectedYearCategory = "all";     // Εμφάνιση όλων των κατηγοριών
         return;                            // Τερματισμός της συνάρτησης εδώ.
     }
