@@ -1094,7 +1094,8 @@ function displayRecord() {
 function wrapTable(htmlContent, containerId, buttonId) {
     return `
     <div class="table-box">
-        <button class="close-table" onclick="closeTable()">
+        <button class="close-table"
+            onclick="closeTable('${containerId}','${buttonId}')">
             ✖
         </button>
         <div class="table-wrapper">
@@ -1105,29 +1106,30 @@ function wrapTable(htmlContent, containerId, buttonId) {
 }
 
 
-// function closeTable(containerId, buttonId) {
+// Κλείνει οποιονδήποτε πίνακα της εφαρμογής.
+// containerId → ποιο container πίνακα θα κλείσει
+// buttonId → ποιο κουμπί θα ξαναενεργοποιήσει
+function closeTable(containerId, buttonId) {
 
-function closeTable() {
-
-    const container = document.getElementById("tableContainer");
-    const btn = document.getElementById("toggleTableBtn");
+    const container = document.getElementById(containerId);
+    const btn = document.getElementById(buttonId);
     const form = document.getElementById("entryForm");
 
     if (container) {
         container.style.display = "none";
-        container.innerHTML = "";   // διαγραφή πίνακα και φίλτρων
+        container.innerHTML = "";
     }
 
     if (btn) btn.disabled = false;
     if (form) form.style.display = "block";
 
-    // RESET FILTERS
+    // reset φίλτρων αναλυτικού πίνακα
     selectedCategory = "all";
     selectedSupplier = "all";
     selectedPayment = "all";
 
-    // Καθαρισμός μηνύματος
-    document.getElementById("resultsInfo").innerText = "";
+    const info = document.getElementById("resultsInfo");
+    if (info) info.innerText = "";
 }
 
     
