@@ -404,6 +404,22 @@
 display: none;
 }
 
+
+@media (max-width: 480px) {
+
+  #tableContainer .data-table{
+      font-size: 12px;
+  }
+
+  #tableContainer .data-table th,
+  #tableContainer .data-table td{
+      padding: 2px 4px;
+  }
+
+}
+
+
+
 </style>
 
 </head>
@@ -556,8 +572,8 @@ display: none;
 
 
 <!-- ΠΛΑΙΣΙΟ ΟΔΗΓΙΩΝ -->
-<div id="helpOverlay">
-
+<div id="helpOverlay"> 
+  
     <div id="helpBox">
 
         <div style="display:flex; align-items:center; gap:10px;">
@@ -598,15 +614,11 @@ display: none;
         - Το κουμπί <b>"Backup"</b> αποθηκεύει αντίγραφο <br>
           &nbsp;&nbsp;των δεδομένων στα "Στοιχεία Λήψης".<br>
         - Το κουμπί <b>"Εισαγωγή"</b> εισάγει δεδομένα από αρχείο backup.<br>
-        - Το κουμπί <b>"Καθαρισμός"</b> διαγράφει όλες τις εγγραφές.<br>    
+        - Το κουμπί <b>"Καθαρισμός"</b> διαγράφει όλες τις εγγραφές.<br><br>     
         </p>        
 
-        <button id="moreHelpBtn" onclick="moreHelp()">Περισσότερες πληροφορίες</button>
-
-        <div id="moreHelpText" 
-        style="display:none; margin-top:10px; border-top:1px solid #ccc; padding-top:10px; max-height:250px; overflow-y:auto;">
-        <div id="helpTop">
-        <b>Αναλυτικές οδηγίες χρήσης</b><br><br>        
+        <h3 style="margin:0;"><b>Αναλυτικότερες οδηγίες:</b></h3>
+        <br>        
 
         <b>Πως καταχωρούμε μια εγγραφή</b>:<br>
         1. Πατάμε το κουμπί <b>➕</b>.<br>
@@ -648,12 +660,12 @@ display: none;
            &nbsp;&nbsp;&nbsp;&nbsp;για να επαληθεύσουμε το συνολικό ποσό της απόδειξης.<br><br>
 
 
+        
         <a href="javascript:void(0)" onclick="goHelpTop()">▲ Επιστροφή επάνω</a>
-        </div>
         
     </div>
-
-</div>
+      
+</div> 
 
 
 
@@ -2284,15 +2296,12 @@ function moreHelp() {
 }
 
 
+
 function goHelpTop() {
-
-  var box = document.getElementById("moreHelpText");
-  box.scrollTo({
-      top: 0,
-      behavior: "smooth"
-  });
-
+  window.scrollTo(0,0);
 }
+
+
 
 </script>
 
