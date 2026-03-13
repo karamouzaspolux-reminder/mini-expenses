@@ -404,7 +404,6 @@
 display: none;
 }
 
-
 /* Διαμόρφωση πίνακα αναλυτικού ώστε να χωράει στο κινητό. */
 @media (max-width: 480px) {
 
@@ -414,7 +413,7 @@ display: none;
 
   #tableContainer .data-table th,
   #tableContainer .data-table td{
-      padding: 1px 3px;    /* λιγότερος χώρος δεξιά-αριστερά */
+      padding: 1px 2px;    /* λιγότερος χώρος δεξιά-αριστερά */
   }
 
 }
@@ -546,9 +545,9 @@ display: none;
     
     <!-- Πλαίσιο Εισαγωγής-Εξαγωγής-Διαγραφής Όλων των Εγγραφών -->
     <div class="data-transfer">
-      <button onclick="exportData()">Backup</button>
-      <button onclick="importData()">Εισαγωγή</button>
-      <button onclick="clearAllData()">Καθαρισμός</button>
+      <button type="button" onclick="exportData()">Backup</button>
+      <button type="button" onclick="importData()">Εισαγωγή</button>
+      <button type="button" onclick="clearAllData()">Καθαρισμός</button>
       <input type="file" id="importFile" accept=".json" hidden>
     </div>
 
@@ -1168,6 +1167,7 @@ function renderTable(dataArray) {
     // Αν δεν υπάρχουν δεδομένα
     if (dataArray.length === 0) {
         container.innerHTML = "<p>Δεν υπάρχουν εγγραφές.</p>";
+        
         return;
     }
 
@@ -1210,7 +1210,7 @@ function renderTable(dataArray) {
         html += "<td>" + record.payment + "</td>";
         html += "<td class='supplier-cell'>" + record.supplier + "</td>";
         html += "<td>" + record.category + "</td>";
-        html += "<td class='amount-cell'>" + record.amount + "</td>";
+        html += "<td class='amount-cell'>" + record.amount.toFixed(2) + "</td>";
         html += "</tr>";
 
         total += Number(record.amount) || 0;   // Υπολογισμός συνόλου
@@ -1372,6 +1372,16 @@ document.getElementById("toggleTableBtn").addEventListener("click", function () 
 // ===== ΚΟΥΜΠΙ ΑΝΑΖΗΤΗΣΗΣ ΑΠΟ ΦΟΡΜΑ =====
 document.getElementById("searchBtn").addEventListener("click", function () {
 
+    // Έλεγχος αν υπάρχουν εγγραφές
+    if (records.length === 0) {
+        alert("Δεν υπάρχουν εγγραφές.");
+
+        // Εμφάνιση φόρμας
+        document.getElementById("entryForm").style.display = "block";
+
+        return;
+    }
+
     // Δημιουργούμε τον πίνακα
     renderTable(records);    
 
@@ -1402,10 +1412,16 @@ document.getElementById("categoryBtn").addEventListener("click", function () {
         return;
     }
 
+        
+     // Έλεγχος αν υπάρχουν εγγραφές
     if (records.length === 0) {
-        container.innerHTML = "<p>Δεν υπάρχουν δεδομένα.</p>";
+        alert("Δεν υπάρχουν εγγραφές.");
+
+        // Εμφάνιση φόρμας
+        document.getElementById("entryForm").style.display = "block";
         return;
     }
+
 
     let totalsByCategory = {};
     let grandTotal = 0;
@@ -1487,8 +1503,12 @@ document.getElementById("paymentBtn").addEventListener("click", function () {
         return;
     }
 
+    // Έλεγχος αν υπάρχουν εγγραφές
     if (records.length === 0) {
-        container.innerHTML = "<p>Δεν υπάρχουν δεδομένα.</p>";
+        alert("Δεν υπάρχουν εγγραφές.");
+
+        // Εμφάνιση φόρμας
+        document.getElementById("entryForm").style.display = "block";
         return;
     }
 
@@ -1571,8 +1591,12 @@ document.getElementById("supplierBtn").addEventListener("click", function () {
         return;
     }
 
+    // Έλεγχος αν υπάρχουν εγγραφές
     if (records.length === 0) {
-        container.innerHTML = "<p>Δεν υπάρχουν δεδομένα.</p>";
+        alert("Δεν υπάρχουν εγγραφές.");
+
+        // Εμφάνιση φόρμας
+        document.getElementById("entryForm").style.display = "block";
         return;
     }
 
@@ -1681,8 +1705,12 @@ document.getElementById("monthBtn").addEventListener("click", function () {
         return;                            // Τερματισμός της συνάρτησης εδώ.
     }
 
+    // Έλεγχος αν υπάρχουν εγγραφές
     if (records.length === 0) {
-        container.innerHTML = "<p>Δεν υπάρχουν δεδομένα.</p>";
+        alert("Δεν υπάρχουν εγγραφές.");
+
+        // Εμφάνιση φόρμας
+        document.getElementById("entryForm").style.display = "block";
         return;
     }
 
@@ -1922,8 +1950,12 @@ document.getElementById("yearBtn").addEventListener("click", function () {
         return;                            // Τερματισμός της συνάρτησης εδώ.
     }
 
+    // Έλεγχος αν υπάρχουν εγγραφές
     if (records.length === 0) {
-        container.innerHTML = "<p>Δεν υπάρχουν δεδομένα.</p>";
+        alert("Δεν υπάρχουν εγγραφές.");
+
+        // Εμφάνιση φόρμας
+        document.getElementById("entryForm").style.display = "block";
         return;
     }
 
@@ -2163,7 +2195,9 @@ function exportData() {
 
 
 // ΣΥΝΑΡΤΗΣΗ ΕΙΣΑΓΩΓΗΣ ΔΕΔΟΜΕΝΩΝ
-function importData() {
+// η συνάρτηση γίνεται παγκόσμια (global) και το HTML την βρίσκει πάντα:
+window.importData = function () {
+
     const fileInput = document.getElementById("importFile");
     fileInput.click();
 
@@ -2173,32 +2207,33 @@ function importData() {
 
         const reader = new FileReader();
         reader.onload = function (e) {
+
             try {
                 const importedData = JSON.parse(e.target.result);
 
                 if (!confirm("Η εισαγωγή θα αντικαταστήσει όλα τα υπάρχοντα δεδομένα. Συνέχεια;"))
                     return;
 
+                // ΕΔΩ μπαίνει η διαγραφή
+                localStorage.removeItem("miniExpensesRecords");
+                localStorage.removeItem("miniExpensesLastId");
+
                 localStorage.setItem("miniExpensesRecords", JSON.stringify(importedData));
-
-                // ===== Εύρεση μεγαλύτερου ID από το αρχείο =====
-                let maxId = 0;
-                for (let r of importedData) {
-                    if (r.id > maxId) maxId = r.id;
-                }
-
-                localStorage.setItem("miniExpensesLastId", maxId);
 
                 alert("Η εισαγωγή ολοκληρώθηκε.");
                 location.reload();
+
             } catch (error) {
                 alert("Μη έγκυρο αρχείο JSON.");
             }
+
         };
 
         reader.readAsText(file);
     };
-}
+
+};
+
 
 
 
@@ -2221,7 +2256,7 @@ function clearAllData(){
 
     document.getElementById("resultsInfo").innerText = "";
 
-    alert("Όλα τα δεδομένα διαγράφηκαν.");
+    alert("Όλα τα δεδομένα διαγράφηκαν επιτυχώς.");
 
     location.reload();
 }
