@@ -76,7 +76,7 @@
 
   .form-row input {
       /* flex: 1;      Το input καταλαμβάνει όλο τον διαθέσιμο χώρο της γραμμής. */
-      width: 200px;                    
+      width: 230px;                    
       padding: 6px;
       font-size: 16px;
   }  
@@ -89,7 +89,7 @@
   .button-row {
     display: flex;
     flex-wrap: wrap;   /* επιτρέπει να σπάνε γραμμή */
-    gap: 7px;          /* απόσταση μεταξύ κουμπιών */
+    gap: 9px;          /* απόσταση μεταξύ κουμπιών */
     margin-top: 0px;    
     /* margin-left: 20px;  Ξεκινάνε από αριστερά  */
     margin-bottom: 14px;
@@ -138,7 +138,7 @@
   .button-row2 {
     display: flex;
     flex-wrap: wrap;   /* επιτρέπει να σπάνε γραμμή */
-    gap: 7px;          /* απόσταση μεταξύ κουμπιών */
+    gap: 18px;          /* απόσταση μεταξύ κουμπιών */
     margin-top: 0px;    
     /* margin-left: 20px;  Ξεκινάνε από αριστερά  */
     margin-bottom: 19px;
@@ -161,12 +161,11 @@
    ================================= */
 
   .button-row button {
-      padding: 1px 2px;         /* Εσωτερικός χώρος */
+      padding: 4px 13px;         /* Εσωτερικός χώρος */
       border: 1px solid #bbb;
       background-color: #f8f9fa;
       border-radius: 4px;        /* Στρογγύλεμα των γωνιών των κουμπιών, όσο > αριθμός => > στρογγύλεμα.*/
-      cursor: pointer;           /* Δείχνει ότι είναι clickable */
-      padding: 4px 8px;
+      cursor: pointer;           /* Δείχνει ότι είναι clickable */      
       font-size: 15px;
       margin-bottom: -8px;
   }
@@ -180,7 +179,7 @@
     
 
   .button-row2 button {
-      padding: 1px 2px;         /* Εσωτερικός χώρος */
+      padding: 4px 13px;         /* Εσωτερικός χώρος */
       border: 1px solid #bbb;
       background-color: #f8f9fa;
       border-radius: 4px;        /* Στρογγύλεμα των γωνιών των κουμπιών, όσο > αριθμός => > στρογγύλεμα.*/
@@ -262,7 +261,7 @@
   .data-table td.supplier-cell {
       text-align: left;
   }
-
+  
   /* Πληρωμές αριστερά */
   .data-table td.payment-cell {
       text-align: left;
@@ -600,7 +599,8 @@ display: none;
         </div>
         
         <p><b>* Κουμπιά πληροφοριών:</b><br>
-        Τα κουμπιά της πρώτης γραμμής μας δίνουν στατιστικές πληροφορίες<br>
+        Τα κουμπιά της πρώτης γραμμής μας δίνουν στατιστικές πληροφορίες.<br>
+        Μερικές φορές ανοίγουν στο δεύτερο πάτημα.<br>
           
         <p><b>* Κουμπιά λειτουργιών:</b><br>
         <b>💾</b> Αποθήκευση εγγραφής<br>
@@ -688,6 +688,14 @@ display: none;
 
 
 <script>
+
+function euro(n) {
+    return Number(n).toLocaleString("el-GR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
 
 // localStorage.clear();    Πλήρης καθαρισμός localStorage για αυτό το αρχείο    
     
@@ -970,7 +978,7 @@ document.getElementById("copyBtn").addEventListener("click", function () {
     document.getElementById("category").focus();
 
     document.getElementById("statusBar").textContent =
-        "Νέα εγγραφή από αντιγραφή (δεν έχει αποθηκευτεί)";
+        "Νέα εγγραφή από αντιγραφή : Συμπληρώστε την 'Κατηγορία' και το 'Ποσό' και αποθηκεύστε! Αν μετανοιώσατε πατήστε το κουμπί 'Esc', για να ακυρωθεί.";
 });
 
 
@@ -1005,7 +1013,8 @@ document.getElementById("receiptTotalBtn").addEventListener("click", function ()
     showMsg(
         "Σύνολο παραστατικού:\n\n" +
         current.supplier + "\n" +
-        current.date + "\n\n" +
+        current.date + "\n" +
+        current.document + "\n\n" +
         total.toFixed(2) + " €"
     );
 
@@ -1235,9 +1244,11 @@ function renderTable(dataArray) {
         // html += "<td>" + record.payment + "</td>";
         html += "<td class='payment-cell'>" + record.payment + "</td>";
         html += "<td class='supplier-cell'>" + record.supplier + "</td>";
+        // html += "<td style='text-align:left'>" + record.supplier + "</td>";
         // html += "<td>" + record.category + "</td>";
         html += "<td class='category-cell'>" + record.category + "</td>";
-        html += "<td class='amount-cell'>" + record.amount.toFixed(2) + "</td>";
+        //html += "<td class='amount-cell'>" + record.amount.toFixed(2) + "</td>";
+        html += "<td class='amount-cell'>" + euro(record.amount) + "</td>";
         html += "</tr>";
 
         total += Number(record.amount) || 0;   // Υπολογισμός συνόλου
@@ -1246,7 +1257,7 @@ function renderTable(dataArray) {
     // Γραμμή συνόλου
     html += "<tr>";
     html += "<td colspan='5' style='text-align:right;font-weight:bold;'>Σύνολο</td>";
-    html += "<td class='amount-cell' style='font-weight:bold;'>" + total.toFixed(2) + "</td>";
+    html += "<td class='amount-cell' style='font-weight:bold;'>" + euro(total) + "</td>";
     html += "</tr>";
 
     html += "</table></div>";                                
@@ -1478,13 +1489,15 @@ document.getElementById("categoryBtn").addEventListener("click", function () {
         let percent = (amount / grandTotal) * 100;
 
         html += "<tr>";
-        html += "<td>" + cat + "</td>";
-        html += "<td class='amount-cell'>" + amount.toFixed(2) + "</td>";
-        html += "<td>" + percent.toFixed(2) + "%</td>";
+        html += "<td style='text-align:left'>" + cat + "</td>";
+        html += "<td class='amount-cell'>" + euro(amount) + "</td>";
+        html += "<td>" + euro(percent) + "%</td>";
 
         html += "<td>";
-        html += "<div class='bar'>";
+        html += "<div class='bar'>";        
+
         html += "<div class='bar-fill' style='width:" + percent.toFixed(2) + "%'></div>";
+
         html += "</div>";
         html += "</td>";
         html += "</tr>";
@@ -1492,7 +1505,7 @@ document.getElementById("categoryBtn").addEventListener("click", function () {
 
     html += "<tr>";
     html += "<td style='font-weight:bold;'>Σύνολο</td>";
-    html += "<td class='amount-cell' style='font-weight:bold;'>" + grandTotal.toFixed(2) + "</td>";
+    html += "<td class='amount-cell' style='font-weight:bold;'>" + euro(grandTotal) + "</td>";
     html += "<td style='font-weight:bold;'>100.00%</td>";
     html += "<td></td>";
     html += "</tr>";
@@ -1567,9 +1580,9 @@ document.getElementById("paymentBtn").addEventListener("click", function () {
         let percent = (amount / grandTotal) * 100;
 
         html += "<tr>";
-        html += "<td>" + cat + "</td>";
-        html += "<td class='amount-cell'>" + amount.toFixed(2) + "</td>";
-        html += "<td>" + percent.toFixed(2) + "%</td>";
+        html += "<td style='text-align:left'>" + cat + "</td>";
+        html += "<td class='amount-cell'>" + euro(amount) + "</td>";
+        html += "<td>" + euro(percent) + "%</td>";
 
         html += "<td>";
         html += "<div class='bar'>";
@@ -1581,7 +1594,7 @@ document.getElementById("paymentBtn").addEventListener("click", function () {
 
     html += "<tr>";
     html += "<td style='font-weight:bold;'>Σύνολο</td>";
-    html += "<td class='amount-cell' style='font-weight:bold;'>" + grandTotal.toFixed(2) + "</td>";
+    html += "<td class='amount-cell' style='font-weight:bold;'>" + euro(grandTotal) + "</td>";
     html += "<td style='font-weight:bold;'>100.00%</td>";
     html += "<td></td>";
     html += "</tr>";
@@ -1655,9 +1668,9 @@ document.getElementById("supplierBtn").addEventListener("click", function () {
         let percent = (amount / grandTotal) * 100;
 
         html += "<tr>";
-        html += "<td>" + cat + "</td>";
-        html += "<td class='amount-cell'>" + amount.toFixed(2) + "</td>";
-        html += "<td>" + percent.toFixed(2) + "%</td>";
+        html += "<td style='text-align:left'>" + cat + "</td>";
+        html += "<td class='amount-cell'>" + euro(amount) + "</td>";
+        html += "<td>" + euro(percent) + "%</td>";
 
         html += "<td>";
         html += "<div class='bar'>";
@@ -1669,7 +1682,7 @@ document.getElementById("supplierBtn").addEventListener("click", function () {
 
     html += "<tr>";
     html += "<td style='font-weight:bold;'>Σύνολο</td>";
-    html += "<td class='amount-cell' style='font-weight:bold;'>" + grandTotal.toFixed(2) + "</td>";
+    html += "<td class='amount-cell' style='font-weight:bold;'>" + euro(grandTotal) + "</td>";
     html += "<td style='font-weight:bold;'>100.00%</td>";
     html += "<td></td>";
     html += "</tr>";
@@ -1862,9 +1875,9 @@ document.getElementById("monthBtn").addEventListener("click", function () {
         let percent = grandTotal === 0 ? 0 : (data.total / grandTotal) * 100;   // Υπολογισμός ποσοστού
 
         html += "<tr>";                          // Δημιουργία γραμμής πίνακα
-        html += "<td>" + data.label + "</td>";   // Εμφάνιση μήνα, π.χ. Ιανουάριος 2026
-        html += "<td class='amount-cell'>" + data.total.toFixed(2) + "</td>"; // Εμφάνιση ποσού (,00)
-        html += "<td>" + percent.toFixed(2) + "%</td>";         // Εμφάνιση ποσοστού (,00)
+        html += "<td style='text-align:left'>" + data.label + "</td>";   // Εμφάνιση μήνα, π.χ. Ιανουάριος 2026
+        html += "<td class='amount-cell'>" + euro(data.total) + "</td>"; // Εμφάνιση ποσού (,00)
+        html += "<td>" + euro(percent) + "%</td>";         // Εμφάνιση ποσοστού (,00)
 
         html += "<td>";     // αρχή κελιού για το γράφημα (μπάρα ποσοστού)
         html += "<div class='bar'>";  // Μέσα σ'αυτό το κελί μπαίνει η μπάρα γραφήματος
@@ -1877,7 +1890,7 @@ document.getElementById("monthBtn").addEventListener("click", function () {
     html += "<tr>";     // Ξεκινά νέα γραμμή πίνακα, όπου θα μπει το σύνολο
     html += "<td style='font-weight:bold;'>Σύνολο</td>";  // Κελί με τη λέξη σύνολο με έντονα γράμματα
     // Κελί με το συνολικό ποσό όλων των μηνών:
-    html += "<td class='amount-cell' style='font-weight:bold;'>" + grandTotal.toFixed(2) + "</td>";
+    html += "<td class='amount-cell' style='font-weight:bold;'>" + euro(grandTotal) + "</td>";
     
     if (grandTotal === 0) {
       html += "<td style='font-weight:bold;'>0.00%</td>";
@@ -2122,9 +2135,9 @@ document.getElementById("yearBtn").addEventListener("click", function () {
         let percent = (data.total / grandTotal) * 100;   // Υπολογισμός ποσοστού
 
         html += "<tr>";                          // Δημιουργία γραμμής πίνακα
-        html += "<td>" + data.label + "</td>";   // Εμφάνιση έτους, π.χ.  2026
-        html += "<td class='amount-cell'>" + data.total.toFixed(2) + "</td>"; // Εμφάνιση ποσού (,00)
-        html += "<td>" + percent.toFixed(2) + "%</td>";         // Εμφάνιση ποσοστού (,00)
+        html += "<td style='text-align:left'>" + data.label + "</td>";   // Εμφάνιση έτους, π.χ.  2026
+        html += "<td class='amount-cell'>" + euro(data.total) + "</td>"; // Εμφάνιση ποσού (,00)
+        html += "<td>" + euro(percent) + "%</td>";         // Εμφάνιση ποσοστού (,00)
 
         html += "<td>";     // αρχή κελιού για το γράφημα (μπάρα ποσοστού)
         html += "<div class='bar'>";  // Μέσα σ'αυτό το κελί μπαίνει η μπάρα γραφήματος
@@ -2137,7 +2150,7 @@ document.getElementById("yearBtn").addEventListener("click", function () {
     html += "<tr>";     // Ξεκινά νέα γραμμή πίνακα, όπου θα μπει το σύνολο
     html += "<td style='font-weight:bold;'>Σύνολο</td>";  // Κελί με τη λέξη σύνολο με έντονα γράμματα
     // Κελί με το συνολικό ποσό όλων των μηνών:
-    html += "<td class='amount-cell' style='font-weight:bold;'>" + grandTotal.toFixed(2) + "</td>";
+    html += "<td class='amount-cell' style='font-weight:bold;'>" + euro(grandTotal) + "</td>";
     // html += "<td style='font-weight:bold;'>100.00%</td>";  // Το συνολικό ποσοστό είναι πάντα 100,00%
     let totalPercent = grandTotal === 0 ? "0.00%" : "100.00%";
     html += "<td style='font-weight:bold;'>" + totalPercent + "</td>";
