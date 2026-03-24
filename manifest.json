@@ -1,11 +1,11 @@
 {
   "name": "Mini Expenses",
   "short_name": "Expenses",
-  "start_url": "/full/",
-  "scope": "/full/",
+  "start_url": "/mini-expenses/",
+  "scope": "/mini-expenses/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "theme_color": "#000000",
   "icons": [
     {
       "src": "icon-192-full.png",
