@@ -35,7 +35,8 @@
    ================================= */
 
   .section {
-      background-color: white; /* Λευκό φόντο, δημιουργεί λευκό κουτί. */      
+      background-color: #e6f2ef;   /* απαλό κυπαρισσί */     
+      width: fit-content;
       width: 100%;            /* Πάρε όλο το διαθέσιμο πλάτος του container σου (μόνο για κινητό)*/      
       max-width: 420px;        /* Καθορισμός μεγίστου πλάτους */
       /* width: 420px;            Καθορισμός σταθερού πλάτους */
@@ -44,8 +45,9 @@
       margin: 10px 10px 10px 10px;     /* Πάνω  Δεξιά  Κάτω  Αριστερά  : αριστερή στοίχιση */
       /* margin: 10px 0 0 10px;        Εναλλακτικός τρόπος για την αριστερή στοίχιση */
       padding: 20px;                   /* Εσωτερικός χώρος, αέρας μέσα στο κουτί */
-      border: 1px solid #ccc;          /* Λεπτό γκρι περίγραμμα */
-      border-radius: 8px;              /* Ελαφρώς στρογγυλεμένες γωνίες */
+      /* border: 1px solid #ccc;           Λεπτό γκρι περίγραμμα */
+      border: 1px solid #cfe3dc;        
+      border-radius: 10px;              /* Ελαφρώς στρογγυλεμένες γωνίες */
       /* Συνολικό πλάτος = 400 + 20 + 20 = 440. Το padding προστίθεται στο εξωτερικό μέγεθος, δεν μεγαλώνει το εσωτερικό κουτί. Μεγαλώνει το συνολικό ορατό μέγεθος. */
       align-content: center;
   }
@@ -70,18 +72,28 @@
       margin-bottom: 0px;        /* Απόσταση μεταξύ γραμμών */
   }
 
+
+
   .form-row label {
       width: 110px;                /* Καθορισμός Σταθερού πλάτους για όλα τα labels */
-      font-weight: bold;          /* Λίγο πιο έντονα γράμματα */
+      font-weight:bold         /* Λίγο πιο έντονα γράμματα */
+      font-size: 11px;
   }
 
-  .form-row input {
-      /* flex: 1;      Το input καταλαμβάνει όλο τον διαθέσιμο χώρο της γραμμής. */
-      width: 200px;                    
-      padding: 6px;
-      font-size: 16px;
-  }  
+  
 
+  .form-row input {
+    background-color: #f8f9fa;  /* απαλό γκρι */
+    border: 1px solid #bbb;
+    padding: 6px;
+    border-radius: 4px;
+    width: 200px;
+    font-size: 16px;
+  }
+
+ .form-row input:focus {
+    background-color: #ffffff;   
+ }
 
   /* ===============================
    Κεντράρισμα κουμπιών
@@ -220,6 +232,9 @@
       border-collapse: collapse;
       /* min-width: 700px;  κρατάει σωστό πλάτος σε desktop */
   }
+
+
+
 
   .bar {
   background: #eee;
@@ -473,7 +488,30 @@ display: none;
 
 
 
+thead tr {
+    background-color: #d0d5d9;
+    font-weight: bold;
+}
+
+
+/* Χρώμα στις ζυγές γραμμές (2, 4, 6...) */
+table tr:nth-child(even) {
+    background-color: #ffffff;
+     
+}
+
+/* Χρώμα στις περιττές γραμμές (1, 3, 5...) - Προαιρετικό */
+table tr:nth-child(odd) {
+    background-color: #f2f2f2;
+}
+
+
+
+
 </style>
+
+
+
 
 </head>
 
@@ -525,6 +563,10 @@ display: none;
         <p>Κυλίστε για να δείτε τις οδηγίες!</p>
       </div>
     </div>
+
+
+
+
 
     <div class="form-row">
         <label for="recordId">Α/Α</label>
@@ -951,12 +993,12 @@ document.getElementById("saveBtn").addEventListener("click", function () {
 
     // ===== DEMO LIMIT =====
 
-   // const DEMO_LIMIT = 30;
+    const DEMO_LIMIT = 30;
 
-   // if (currentIndex === -1 && records.length >= DEMO_LIMIT) {
-   //     showMsg("Δοκιμαστική έκδοση: επιτρέπονται έως 30 εγγραφές. Πατήστε 'Καθαρισμός' και ξεκινήστε πάλι από την αρχή ή διαγράψτε κάποιες τελευταίες εγγραφές, για να συνεχίσετε τις δοκιμές σας.");
-   //     return;
-   // }
+    if (currentIndex === -1 && records.length >= DEMO_LIMIT) {
+        showMsg("Δοκιμαστική έκδοση: επιτρέπονται έως 30 εγγραφές. Πατήστε 'Καθαρισμός' και ξεκινήστε πάλι από την αρχή ή διαγράψτε κάποιες τελευταίες εγγραφές, για να συνεχίσετε τις δοκιμές σας.");
+        return;
+    }
 
     // ================= GET VALUES =================
     let paymentValue = document.getElementById("payment").value.trim();
@@ -1143,12 +1185,12 @@ document.getElementById("newBtn").addEventListener("click", function () {
 
     // ===== DEMO LIMIT =====
 
-   // const DEMO_LIMIT = 30;
+    const DEMO_LIMIT = 30;
 
-   // if (currentIndex === -1 && records.length >= DEMO_LIMIT) {
-   //     showMsg("Δοκιμαστική έκδοση: επιτρέπονται έως 30 εγγραφές. Πατήστε 'Καθαρισμός' και ξεκινήστε πάλι από την αρχή ή διαγράψτε κάποιες τελευταίες εγγραφές, για να συνεχίσετε τις δοκιμές σας.");
-   //     return;
-   // }
+    if (currentIndex === -1 && records.length >= DEMO_LIMIT) {
+        showMsg("Δοκιμαστική έκδοση: επιτρέπονται έως 30 εγγραφές. Πατήστε 'Καθαρισμός' και ξεκινήστε πάλι από την αρχή ή διαγράψτε κάποιες τελευταίες εγγραφές, για να συνεχίσετε τις δοκιμές σας.");
+        return;
+    }
 
     currentIndex = -1;
 
@@ -1419,8 +1461,7 @@ function renderTable(dataArray) {
     html += "</table></div>";                                
 
     container.innerHTML = wrapTable(html, "tableContainer", "toggleTableBtn"); // Δημιουργία του πίνακα
-
-   
+    
    let toggle = container.querySelector(".date-toggle");
    let box = container.querySelector(".date-filter-box");
 
@@ -1716,6 +1757,8 @@ document.getElementById("categoryBtn").addEventListener("click", function () {
 
     container.innerHTML = wrapTable(html, "categoryContainer", "categoryBtn");
     
+
+    
     container.style.display = "block";
     // this.textContent = "Κατηγορίες΄Χ΄";
     categoryVisible = true;
@@ -1804,7 +1847,7 @@ document.getElementById("paymentBtn").addEventListener("click", function () {
     html += "</table></div>";
 
     container.innerHTML = wrapTable(html, "paymentContainer", "paymentBtn");
-
+    
     container.style.display = "block";
     //this.textContent = "Πληρωμές΄Χ΄";
     paymentVisible = true;
@@ -1892,7 +1935,8 @@ document.getElementById("supplierBtn").addEventListener("click", function () {
     html += "</table></div>";
 
     container.innerHTML = wrapTable(html, "supplierContainer", "supplierBtn");
-
+    
+    
     container.style.display = "block";
     //this.textContent = "Προμηθευτές΄Χ΄";
     supplierVisible = true;
@@ -2108,6 +2152,7 @@ document.getElementById("monthBtn").addEventListener("click", function () {
 
     // // Εμφάνιση του πίνακα στο container
     container.innerHTML = wrapTable(html, "summaryMonthContainer", "monthBtn");
+    
 
     // ===== Γέμισμα dropdown κατηγορίας =====
     let select = document.getElementById("monthCategoryFilter"); // Παίρνουμε το dropdown που κάναμε
@@ -2363,7 +2408,7 @@ document.getElementById("yearBtn").addEventListener("click", function () {
 
     // // Εμφάνιση του πίνακα στο container
     container.innerHTML = wrapTable(html, "summaryYearContainer", "yearBtn");
-
+    
     // ===== Γέμισμα dropdown κατηγορίας =====
     let select = document.getElementById("yearCategoryFilter"); // Παίρνουμε το dropdown που κάναμε
     let paymentSelect = document.getElementById("yearPaymentFilter");
@@ -2689,12 +2734,10 @@ document.addEventListener("click", function(e) {
 
 
 
+
+
+
 </script>
-
-
-
-
-
 
 
 </body>
